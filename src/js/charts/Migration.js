@@ -37,7 +37,8 @@ export default function Migration(data,options) {
 			},
 			width:width,
 			height:height,
-			filter:null
+			filter:null,
+			areas:["africa","americas","asia","europe","oceania","namerica","samerica"]
 		});
 
 	}(data));
@@ -45,7 +46,9 @@ export default function Migration(data,options) {
 	function updateData() {
 
 		data=data.filter(function(d){
-			return d.from!="Asia" && d.from!="Africa" && d.from!="Unknown"
+			return d.from!=="Asia" && d.from!=="Africa" && d.from!=="Oceania" 
+					&& d.from!== "America" && d.from!=="Unknown" && d.from !== "Stateless"
+					&& d.from !== "Central and Eastern Europe" && d.from !== "Other european countries"
 		})
 
 		var from_data=d3.nest()
@@ -95,10 +98,40 @@ export default function Migration(data,options) {
 							}
 						})
 						.entries(data)
-
+		var region_codes={
+			"002":"africa",
+			"019":"americas",
+			"142":"asia",
+			"150":"europe",
+			"009":"oceania"
+		}
+		var sub_region_codes={
+			"021":"namerica",
+			"005":"samerica",
+			"013":"samerica"
+		}
 		var countries={
-			world:[],
-			europe:to_data.map(function(d){return d.key})
+			world:from_data.map(function(d){
+				var iso=options.iso.find(function(c){
+					return c.name === d.key || c.name2 === d.key;
+				}),
+					area=iso?iso["region-code"]:0,
+					subarea=iso?iso["sub-region-code"]:0;
+				if(!area) {
+					console.log("NOT FOUND",d.key,area,iso)
+				}
+				if(region_codes[area]=="americas"){
+
+				}
+				return {
+					c:d.key,
+					//a:region_codes[area==="019"?subarea:area]
+					a:region_codes[area]
+				}
+			}),
+			europe:to_data.map(function(d){
+				return d.key;
+			})
 		}
 
 		processed_data={
@@ -108,7 +141,7 @@ export default function Migration(data,options) {
 						total:d3.sum(from_data,function(d){
 							return d.values.sizes[0];
 						}),
-						countries:from_data.map(function(d){return d}).sort(function(a,b){
+						countries:from_data.filter(function(d){return d.values.sizes[0]>0}).map(function(d){return d}).sort(function(a,b){
 							return b.values.sizes[0] - a.values.sizes[0];
 						})
 					},
@@ -116,7 +149,7 @@ export default function Migration(data,options) {
 						total:d3.sum(to_data,function(d){
 							return d.values.sizes[0];
 						}),
-						countries:to_data.map(function(d){return d}).sort(function(a,b){
+						countries:to_data.filter(function(d){return d.values.sizes[0]>0}).map(function(d){return d}).sort(function(a,b){
 							return b.values.sizes[0] - a.values.sizes[0];
 						})
 					}
@@ -126,7 +159,7 @@ export default function Migration(data,options) {
 						total:d3.sum(from_data,function(d){
 							return d.values.sizes[1];
 						}),
-						countries:from_data.map(function(d){return d}).sort(function(a,b){
+						countries:from_data.filter(function(d){return d.values.sizes[1]>0}).map(function(d){return d}).sort(function(a,b){
 							return b.values.sizes[1] - a.values.sizes[1];
 						})
 					},
@@ -134,7 +167,7 @@ export default function Migration(data,options) {
 						total:d3.sum(to_data,function(d){
 							return d.values.sizes[1];
 						}),
-						countries:to_data.map(function(d){return d}).sort(function(a,b){
+						countries:to_data.filter(function(d){return d.values.sizes[1]>0}).map(function(d){return d}).sort(function(a,b){
 							return b.values.sizes[1] - a.values.sizes[1];
 						})
 					}

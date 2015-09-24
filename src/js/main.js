@@ -1,14 +1,16 @@
 import iframeMessenger from 'guardian/iframe-messenger'
 import mainHTML from './text/main.html!text'
+import iso from '../assets/data/iso.json!json'
 import d3 from 'd3'
 import queue from 'queue-async'
 import Migration from './charts/Migration'
 
+import RAF from './lib/raf'
 
 export function init(el, context, config, mediator) {
     iframeMessenger.enableAutoResize();
 
-    el.innerHTML = mainHTML.replace(/%assetPath%/g, config.assetPath);
+    
 
     
 
@@ -99,19 +101,35 @@ export function init(el, context, config, mediator) {
             })
 
             //console.log(data)
+            el.innerHTML = mainHTML.replace(/%assetPath%/g, config.assetPath);
+
+            (function checkInnerHTML() {
+                var b=document.querySelector("#migration");
+                if(b && b.getBoundingClientRect().height) {
+                    
+                    window.migration=new Migration(data.filter(function(d){return d.flows[0]>0 || d.flows[1]>0}),{
+                        container:"#migration",
+                        iso:iso
+                    })
+
+                    d3.select("h3")
+                        .selectAll("a")
+                        .on("click",function(d,i){
+                            d3.event.preventDefault();
+
+                            migration.changeStatus(i);
+                        })
+
+                    return; 
+                };
+                window.requestAnimationFrame(checkInnerHTML);   
+            }());
+            
 
             
-            window.migration=new Migration(data.filter(function(d){return d.flows[0]>0 || d.flows[1]>0}),{
-                container:"#migration"
-            })
+            
 
-            d3.select("h3")
-                .selectAll("a")
-                .on("click",function(d,i){
-                    d3.event.preventDefault();
-
-                    migration.changeStatus(i);
-                })
+            
 
         })
 
