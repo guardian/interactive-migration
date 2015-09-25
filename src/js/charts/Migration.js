@@ -6,17 +6,23 @@ export default function Migration(data,options) {
 	console.log("Migration")
 	console.log(data)
 
+	var container=d3.select(options.container);
+
+	if(options.country) {
+		container.append("h4")
+					.text(options.country);	
+	}
 	
 
-	var container=d3.select(options.container)
+	var diagram=container
 			.append("div")
 			.attr("class","diagram")
 
-	var size=container.node().getBoundingClientRect(),
+	var size=diagram.node().getBoundingClientRect(),
 		width=size.width,
 		height=size.height;
 
-	var diagram;
+	var zankey;
 
 	
 	
@@ -27,17 +33,23 @@ export default function Migration(data,options) {
 
 		updateData();
 
-		diagram=new ZankeyDiagram(processed_data,{
-			container:container.node(),
+
+
+		zankey=new ZankeyDiagram(processed_data,{
+			container:diagram.node(),
 			margins:{
-				top:20,
-				left:150,
-				right:150,
-				bottom:20
+				top:0,
+				left:80,
+				right:100,
+				bottom:0
 			},
 			width:width,
 			height:height,
 			filter:null,
+			max:options.max,
+			status:options.status,
+			country_colors:options.country_colors,
+			show_country_names:options.show_country_names,
 			areas:["africa","americas","asia","europe","oceania","namerica","samerica"]
 		});
 
@@ -141,7 +153,17 @@ export default function Migration(data,options) {
 						total:d3.sum(from_data,function(d){
 							return d.values.sizes[0];
 						}),
-						countries:from_data.filter(function(d){return d.values.sizes[0]>0}).map(function(d){return d}).sort(function(a,b){
+						countries:from_data.filter(function(d){return d.values.sizes[0]>0}).map(function(d){
+							return {
+								key:d.key,
+								values:{
+									flows:d.values.flows.map(function(d){return d;}).sort(function(a,b){
+										return b.flows[0] - a.flows[0];
+									}),
+									sizes:d.values.sizes
+								}
+							}
+						}).sort(function(a,b){
 							return b.values.sizes[0] - a.values.sizes[0];
 						})
 					},
@@ -149,7 +171,17 @@ export default function Migration(data,options) {
 						total:d3.sum(to_data,function(d){
 							return d.values.sizes[0];
 						}),
-						countries:to_data.filter(function(d){return d.values.sizes[0]>0}).map(function(d){return d}).sort(function(a,b){
+						countries:to_data.filter(function(d){return d.values.sizes[0]>0}).map(function(d){
+							return {
+								key:d.key,
+								values:{
+									flows:d.values.flows.map(function(d){return d;}).sort(function(a,b){
+										return b.flows[0] - a.flows[0];
+									}),
+									sizes:d.values.sizes
+								}
+							}
+						}).sort(function(a,b){
 							return b.values.sizes[0] - a.values.sizes[0];
 						})
 					}
@@ -159,7 +191,17 @@ export default function Migration(data,options) {
 						total:d3.sum(from_data,function(d){
 							return d.values.sizes[1];
 						}),
-						countries:from_data.filter(function(d){return d.values.sizes[1]>0}).map(function(d){return d}).sort(function(a,b){
+						countries:from_data.filter(function(d){return d.values.sizes[1]>0}).map(function(d){
+							return {
+								key:d.key,
+								values:{
+									flows:d.values.flows.sort(function(a,b){
+										return b.flows[1] - a.flows[1];
+									}),
+									sizes:d.values.sizes
+								}
+							}
+						}).sort(function(a,b){
 							return b.values.sizes[1] - a.values.sizes[1];
 						})
 					},
@@ -167,7 +209,17 @@ export default function Migration(data,options) {
 						total:d3.sum(to_data,function(d){
 							return d.values.sizes[1];
 						}),
-						countries:to_data.filter(function(d){return d.values.sizes[1]>0}).map(function(d){return d}).sort(function(a,b){
+						countries:to_data.filter(function(d){return d.values.sizes[1]>0}).map(function(d){
+							return {
+								key:d.key,
+								values:{
+									flows:d.values.flows.sort(function(a,b){
+										return b.flows[1] - a.flows[1];
+									}),
+									sizes:d.values.sizes
+								}
+							}
+						}).sort(function(a,b){
 							return b.values.sizes[1] - a.values.sizes[1];
 						})
 					}
@@ -180,7 +232,7 @@ export default function Migration(data,options) {
 	}
 
 	this.changeStatus=function(status) {
-		diagram.changeStatus(status);
+		zankey.changeStatus(status);
 	}
 
 	function setExtents() {
@@ -188,7 +240,7 @@ export default function Migration(data,options) {
 	}
 
 	function update(){
-		diagram.update();
+		zankey.update();
 	}
 
 	function resize(){
@@ -196,7 +248,7 @@ export default function Migration(data,options) {
 		var size=d3.select(options.container).node().getBoundingClientRect();
 			this.width=size.width;
 
-		diagram.update(this.width);
+		zankey.update(this.width);
 	}
 
 }

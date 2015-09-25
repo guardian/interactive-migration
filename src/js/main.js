@@ -105,13 +105,26 @@ export function init(el, context, config, mediator) {
 
             (function checkInnerHTML() {
                 var b=document.querySelector("#migration");
+
                 if(b && b.getBoundingClientRect().height) {
-                    
-                    window.migration=new Migration(data.filter(function(d){return d.flows[0]>0 || d.flows[1]>0}),{
-                        container:"#migration",
-                        iso:iso
+
+                    var migration1992=new Migration(data.filter(function(d){return d.flows[0]>0 || d.flows[1]>0}),{
+                        container:"#m1992 > .migration",
+                        iso:iso,
+                        status:0,
+                        country_colors:[1,1],
+                        show_country_names:[1,1]
+                    })
+                    var migration2015=new Migration(data.filter(function(d){return d.flows[0]>0 || d.flows[1]>0}),{
+                        container:"#m2015 > .migration",
+                        iso:iso,
+                        status:1,
+                        country_colors:[1,1],
+                        show_country_names:[1,1]
                     })
 
+
+                    /*
                     d3.select("h3")
                         .selectAll("a")
                         .on("click",function(d,i){
@@ -119,8 +132,115 @@ export function init(el, context, config, mediator) {
 
                             migration.changeStatus(i);
                         })
+                    */
+                    
+                    var maxes=d3.nest()
+                                .key(function(d){
+                                    return d.to;
+                                })
+                                .rollup(function(leaves){
+                                    return [
+                                        d3.sum(leaves,function(d){
+                                            return d.flows[0]
+                                        }),
+                                        d3.sum(leaves,function(d){
+                                            return d.flows[1]
+                                        })
+                                    ]
+                                })
+                                .entries(data)
 
-                    return; 
+                    console.log(maxes)
+
+                    var max=d3.max([
+
+                        d3.max(maxes,function(d){
+                            return d.values[0]
+                        }),
+                        d3.max(maxes,function(d){
+                            return d.values[1]
+                        })
+
+                    ])
+
+                    console.log(max)
+
+                   
+                    var countries=["Germany","Hungary","Italy","United Kingdom","France","Belgium","Greece","Spain","Austria","Sweden","Finland"]
+                    
+                    var row=d3.select("#countriesSMCompare")
+                        .selectAll("div.countries-row")
+                        .data(countries)
+                        .enter()
+                        .append("div")
+                            .attr("class","countries-row");
+
+                    row.append("div")
+                        .append("div")
+                        .attr("class","country-div")
+                        .append("div")
+                            .attr("class","migration")
+                            .each(function(c){
+                                var self=this;
+                                new Migration(data.filter(function(d){
+                                        return d.to === c && (d.flows[0]>0 || d.flows[1]>0);
+                                    }),{
+                                    container:self,
+                                    iso:iso,
+                                    country:c+" 1992",
+                                    max:max,
+                                    status:0,
+                                    country_colors:[1,0],
+                                    show_country_names:[1,0]
+                                })
+                            })
+
+                    row.append("div")
+                        .append("div")
+                        .attr("class","country-div")
+                        .append("div")
+                            .attr("class","migration")
+                            .each(function(c){
+                                var self=this;
+                                new Migration(data.filter(function(d){
+                                        return d.to === c && (d.flows[0]>0 || d.flows[1]>0);
+                                    }),{
+                                    container:self,
+                                    iso:iso,
+                                    country:c+" 2015",
+                                    max:max,
+                                    status:1,
+                                    country_colors:[1,0],
+                                    show_country_names:[1,0]
+                                })
+                            })
+
+
+                    d3.select("#countriesSM")
+                        .selectAll("div.country")
+                        .data(countries)
+                        .enter()
+                        .append("div")
+                            .attr("class","country-div")
+                                .append("div")
+                                .attr("class","migration")
+                                .each(function(c){
+                                    var self=this;
+                                    new Migration(data.filter(function(d){
+                                            return d.to === c && (d.flows[0]>0 || d.flows[1]>0);
+                                        }),{
+                                        container:self,
+                                        iso:iso,
+                                        country:c,
+                                        max:max,
+                                        status:1,
+                                        country_colors:[1,0],
+                                        show_country_names:[1,0]
+                                    })
+                                })
+                    
+                    return;
+                    
                 };
                 window.requestAnimationFrame(checkInnerHTML);   
             }());

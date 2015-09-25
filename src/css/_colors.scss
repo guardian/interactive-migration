@@ -22,6 +22,24 @@ $greece:#0D5EAF;
 $denmark:#C60C30;
 $portugal:#006600;
 $finland:#003580;
+$ireland:#009B48;
+$cyprus:#D87503;
+$malta:#DE0124;
+$czechrepublic:#11457E;
+$romania:#FCD116;
+$luxembourg:#00A1DE;
+$lithuania:#006A44;
+$latvia:#9E3039;
+$slovenia:#005DA3;
+$estonia:#4891D9;
+$slovakia:#EE1C25;
+$croatia:#171695;
+
+.gray {
+	stop-color:#dcdcdc;
+	fill:#dcdcdc;
+	fill-opacity:1;
+}
 
 .africa {
 	stop-color:$africa;
@@ -45,8 +63,8 @@ $finland:#003580;
 	stop-color:$asia;
 }
 
-$countries-list: hungary, germany, italy, unitedkingdom, austria, france, belgium, netherlands, sweden, spain, bulgaria, denmark, greece, poland, portugal, finland;
-$colors-list: $hungary, $germany, $italy, $unitedkingdom, $austria, $france, $belgium, $netherlands, $sweden, $spain, $bulgaria, $denmark, $greece, $poland, $portugal, $finland;
+$countries-list: hungary, germany, italy, unitedkingdom, austria, france, belgium, netherlands, sweden, spain, bulgaria, denmark, greece, poland, portugal, finland, ireland,cyprus,malta,czechrepublic,romania,luxembourg,lithuania,latvia,slovenia,estonia,slovakia,croatia;
+$colors-list: $hungary, $germany, $italy, $unitedkingdom, $austria, $france, $belgium, $netherlands, $sweden, $spain, $bulgaria, $denmark, $greece, $poland, $portugal, $finland,$ireland,$cyprus,$malta,$czechrepublic,$romania,$luxembourg,$lithuania,$latvia,$slovenia,$estonia,$slovakia,$croatia;
 @each $current-color in $colors-list {
     $i: index($colors-list, $current-color);
     .#{nth($countries-list, $i)} {
@@ -54,13 +72,3 @@ $colors-list: $hungary, $germany, $italy, $unitedkingdom, $austria, $france, $be
         fill: $current-color;
     }
 }
-//background-color: nth($background-colors-list, $i);
-/*
-$country-list: $hungary, $germany, $italy;
-
-@for $i from 1 through length($country-list) {
-	.{nth($country-list, $i)} {
-		stop-color: nth($country-list, $i);
-	}
-}
-*/

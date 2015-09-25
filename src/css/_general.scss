@@ -2,7 +2,6 @@ body,
 figure.interactive {
     margin: 0;
     padding: 0;
-    background-color: #dcdcdc;
 }
 
 // Link styles don't exist on the app
@@ -59,3 +58,7 @@ a {
 .fonts__text-egyptian { @include fs-bodyCopy(2); }
 .fonts__sans { @include f-headlineSans; }
 .fonts__text-sans { @include fs-textSans(4); }
+
+.section {
+    margin-bottom:50px;
+}

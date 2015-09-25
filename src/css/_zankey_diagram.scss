@@ -3,7 +3,7 @@ svg.zankey-diagram {
 	path {
 		stroke:#333;
 		stroke-width:1;
-		stroke-opacity: 0.5;
+		stroke-opacity: 0.9;
 		fill:none;
 	}
 
@@ -66,7 +66,7 @@ svg.zankey-diagram {
 	.flows {
 		.flow.hidden {
 			path {
-				stroke-opacity:0.1;	
+				//stroke-opacity:0.1;	
 			}
 		}
 		.flow.highlight {

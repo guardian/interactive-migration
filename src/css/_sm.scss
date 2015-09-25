@@ -1,0 +1,44 @@
+.sm {
+	overflow: hidden;
+
+	& > .country-div {
+		width:33%;
+		
+		float:left;
+	
+		h4 {
+			@include fs-header(1);
+			text-align: center;
+			margin:0;
+			padding: 0;
+		}
+
+	}
+
+} 
+
+.sm-compare {
+	
+
+	& > .countries-row {
+		width:100%;
+		overflow: hidden;
+
+		.country-div {
+			float:left;
+			width:40%;
+			margin:0 5%;
+		}
+
+		
+	
+		h4 {
+			@include fs-header(1);
+			text-align: center;
+			margin:0;
+			padding: 0;
+		}
+
+	}
+
+} 

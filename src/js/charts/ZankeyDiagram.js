@@ -6,7 +6,7 @@ export default function ZankeyDiagram(data,options) {
 	console.log("ZankeyDiagram")
 	//console.log(data)
 
-	var CURRENT_STATUS=0,
+	var CURRENT_STATUS=options.status || 0,
 		statueses=data.flows.length;
 
 	
@@ -24,6 +24,13 @@ export default function ZankeyDiagram(data,options) {
 	computeExtents();
 
 	var ky = (HEIGHT-(margins.top+margins.bottom)-(extents.length*spacing)) / extents.y[1];
+
+	extents.diffs_from=data.flows.map(function(d,i){
+								//console.log(extents.y[1],i,d.from.total,HEIGHT-(margins.top+margins.bottom),(d.from.total*ky + extents.diffs[i]*spacing))
+								var space=(extents.y[1] - d.from.total)*ky + (extents.length - d.from.countries.length)*spacing
+								//console.log("--->",space)
+								return space/2;
+							})
 
 	computeNodes();
 
@@ -78,6 +85,27 @@ export default function ZankeyDiagram(data,options) {
                         })
         })
     });
+    options.areas.forEach(function(area){
+        var gradient=defs.append("linearGradient")
+                .attr({
+                    id:"grad_"+area+"2gray",
+                    x1:"0%",
+                    y1:"0%",
+                    x2:"100%",
+                    y2:"0%"
+                });
+        gradient.append("stop")
+                    .attr({
+                        offset:"0%",
+                        "class":area
+
+                    })
+        gradient.append("stop")
+                    .attr({
+                        offset:"100%",
+                        "class":"gray"
+                    })
+    })
 
 	var flows_g=svg.append("g")
 					.attr("class","flows")
@@ -104,7 +132,7 @@ export default function ZankeyDiagram(data,options) {
 
 		var flowset=data.flows[CURRENT_STATUS]
 		
-			var from_y=[0,0];
+			var from_y=[extents.diffs_from[0],extents.diffs_from[1]];
 			flowset.from.countries.forEach(function(country,i){
 
 				//console.log("!!!",country)
@@ -136,7 +164,7 @@ export default function ZankeyDiagram(data,options) {
 
 
 
-			var to_y=[(extents.diffs[0]*spacing)/2,(extents.diffs[1]*spacing)/2];
+			var to_y=[(extents.diffs[0]*spacing)/2+extents.diffs_from[0],(extents.diffs[1]*spacing)/2+extents.diffs_from[1]];
 			flowset.to.countries.forEach(function(country,i){
 				var rel_y=[0,0];
 				country.values.flows.forEach(function(flow){
@@ -171,7 +199,7 @@ export default function ZankeyDiagram(data,options) {
 	function computeExtents() {
 		
 		extents= {
-			y:[0,d3.max(data.flows,function(d){
+			y:[0,options.max || d3.max(data.flows,function(d){
 				return d.from.total;
 			})],
 			length:d3.max(data.flows,function(d){
@@ -181,6 +209,8 @@ export default function ZankeyDiagram(data,options) {
 				return d.from.countries.length - d.to.countries.length;
 			})
 		}
+
+		
 	}
 
 	this.changeStatus=function(status) {
@@ -209,19 +239,25 @@ export default function ZankeyDiagram(data,options) {
 								.on("mouseenter",function(d){
 									showFlowsFrom(d.key);
 								})
-
-		new_countries.append("text")
-					.attr("x",-2)
-					.attr("dy","0.2em")
-					.text(function(d){
-						return d.key;
-					})
+		if(options.show_country_names[0]) {
+			new_countries.append("text")
+						.attr("x",-2)
+						.attr("dy","0.2em")
+						.text(function(d){
+							return d.key;
+						})
+		}
 
 		new_countries.append("rect")
 					.attr("x",0)
 					.attr("y",0)
 					.attr("width",bar_width)
 					.attr("class",function(d) {
+
+						if(!options.country_colors[0]) {
+							return "country gray";
+						}
+
 						var area=data.countries.world.find(function(c){
 							return c.c === d.key;
 						})
@@ -320,22 +356,27 @@ export default function ZankeyDiagram(data,options) {
 									showFlowsTo(d.key);
 								})
 
-		new_countries.append("text")
-					.attr("x",bar_width+2)
-					.attr("dy","0.2em")
-					.attr("y",function(d){
-						//console.log(d);
-						return (d.values.sizes[CURRENT_STATUS]*ky)/2;
-					})
-					.text(function(d){
-						return d.key;
-					})
+		if(options.show_country_names[1]) {
+			new_countries.append("text")
+						.attr("x",bar_width+2)
+						.attr("dy","0.2em")
+						.attr("y",function(d){
+							//console.log(d);
+							return (d.values.sizes[CURRENT_STATUS]*ky)/2;
+						})
+						.text(function(d){
+							return d.key;
+						})
+		}
 
 		new_countries.append("rect")
 					.attr("x",0)
 					.attr("y",0)
 					.attr("width",bar_width)
 					.attr("class",function(d) {
+						if(!options.country_colors[1]) {
+							return "country gray";
+						}
 						return "country "+d.key.replace(/\s/gi,"").toLowerCase();
 					})
 
@@ -391,7 +432,7 @@ export default function ZankeyDiagram(data,options) {
 										})*/
 		to_g.selectAll("g.country rect.country")
 					.attr("height",function(d){
-						return d3.max([0.5,d.values.sizes[CURRENT_STATUS] * ky]);
+						return d3.max([0.5,d.values.sizes[CURRENT_STATUS] * ky + 1]);
 					})
 
 		to_g.selectAll("g.country rect.bg")
@@ -428,6 +469,8 @@ export default function ZankeyDiagram(data,options) {
 			x2 = xi(curvature),
           	x3 = xi(1 - curvature)
 
+        //y1 = (flow.to_y[CURRENT_STATUS]*ky)<0.5?y1-0.5:y1
+
         return 	 "M" + x0 + "," + y0
 	           + "C" + x2 + "," + y0
 	           + " " + x3 + "," + y1
@@ -453,27 +496,34 @@ export default function ZankeyDiagram(data,options) {
 									return d.from+"2"+d.to;
 								})
 		flows.exit().remove();
+		
+		
+			new_flows.append("path")
+						.style("stroke",function(d){
 
-		new_flows.append("path")
-					.style("stroke",function(d){
-						//return "#ff0000"
-						var area=data.countries.world.find(function(c){
-							return c.c === d.from;
+							var area=data.countries.world.find(function(c){
+								return c.c === d.from;
+							})
+
+							if(!options.country_colors[1]) {
+								return "url(#grad_"+area.a+"2gray";
+							}
+
+							return "url(#grad_"+area.a+"2"+d.to.replace(/\s/gi,"").toLowerCase()+")"
+							//return color_scale(d.to)
 						})
-
-						return "url(#grad_"+area.a+"2"+d.to.replace(/\s/gi,"").toLowerCase()+")"
-						//return color_scale(d.to)
-					})
+		
 
 		flows_g.selectAll("g.flow")
 					.select("path")
-						.classed("opaque",function(d){
+						/*.classed("opaque",function(d){
 							return d.flows[CURRENT_STATUS]*ky<1
-						})
+						})*/
 						.transition()
 						.duration(1000)
 						.attr("d",drawFlow)
 						.style("stroke-width",function(d){
+							//return d.flows[CURRENT_STATUS]*ky;
 							return d3.max([(d.flows[CURRENT_STATUS]*ky),0.5]);
 						})
 						
