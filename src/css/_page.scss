@@ -1,0 +1,58 @@
+.header {
+    position: relative;
+    overflow: hidden;
+    //border-bottom: 1px solid colour(neutral-1);
+    border-top:none !important;
+    padding-bottom: ($gs-baseline * 2);
+    z-index: 9999;
+
+    h1 {
+		@include fs-headline(6);
+		margin-top:0;
+
+		@include mq(tablet) {
+			@include fs-headline(8);
+			margin-top: 0.2em;
+		}
+
+		@include mq(desktop) {
+			@include fs-headline(9);
+			margin-top: 1em;
+		}
+
+		
+	}
+}
+
+.header-date,
+.header-text {
+    color: colour(neutral-2);
+    
+    @include mq(desktop) { //12
+        max-width: gs-span(8)
+    }
+
+    
+
+    & > a {
+        font-weight: bold;
+    }
+
+    @include fs-bodyCopy(2);
+
+}
+
+.header-date {
+    @include fs-textSans(1);
+    margin-top: -($gs-baseline / 2);
+    a {
+    	font-weight: bold;
+    }
+}
+
+.section {
+	h1 {
+
+	}
+	
+}

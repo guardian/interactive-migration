@@ -103,26 +103,39 @@ export function init(el, context, config, mediator) {
             //console.log(data)
             el.innerHTML = mainHTML.replace(/%assetPath%/g, config.assetPath);
 
+            var min_flow=1;
+
             (function checkInnerHTML() {
                 var b=document.querySelector("#migration");
 
                 if(b && b.getBoundingClientRect().height) {
-
-                    var migration1992=new Migration(data.filter(function(d){return d.flows[0]>0 || d.flows[1]>0}),{
+                    
+                    var migration1992=new Migration(data.filter(function(d){return d.flows[0]>min_flow || d.flows[1]>min_flow}),{
                         container:"#m1992 > .migration",
                         iso:iso,
                         status:0,
+                        spacing:{
+                            l:2,
+                            r:2
+                        },
                         country_colors:[1,1],
                         show_country_names:[1,1]
                     })
-                    var migration2015=new Migration(data.filter(function(d){return d.flows[0]>0 || d.flows[1]>0}),{
+                    
+                    
+                    var migration2015=new Migration(data.filter(function(d){return d.flows[0]>min_flow || d.flows[1]>min_flow}),{
                         container:"#m2015 > .migration",
                         iso:iso,
                         status:1,
+                        spacing:{
+                            l:2,
+                            r:2
+                        },
                         country_colors:[1,1],
                         show_country_names:[1,1]
                     })
-
+                    
+                    
 
                     /*
                     d3.select("h3")
@@ -168,6 +181,15 @@ export function init(el, context, config, mediator) {
                    
                     var countries=["Germany","Hungary","Italy","United Kingdom","France","Belgium","Greece","Spain","Austria","Sweden","Finland"]
                     
+                    var str=`<div class="subsection">
+                                <div class="sub-intro">
+                                    <h2></h2>
+                                    <p></p>
+                                </div>
+                                <div class="sub-contents"></div>
+                            </div>`;
+
+
                     var row=d3.select("#countriesSMCompare")
                         .selectAll("div.countries-row")
                         .data(countries)
@@ -183,11 +205,16 @@ export function init(el, context, config, mediator) {
                             .each(function(c){
                                 var self=this;
                                 new Migration(data.filter(function(d){
-                                        return d.to === c && (d.flows[0]>0 || d.flows[1]>0);
+                                        return d.to === c && (d.flows[0]>min_flow || d.flows[1]>min_flow);
                                     }),{
                                     container:self,
                                     iso:iso,
                                     country:c+" 1992",
+                                    auto:true,
+                                    spacing:{
+                                        l:2,
+                                        r:2
+                                    },
                                     max:max,
                                     status:0,
                                     country_colors:[1,0],
@@ -203,18 +230,23 @@ export function init(el, context, config, mediator) {
                             .each(function(c){
                                 var self=this;
                                 new Migration(data.filter(function(d){
-                                        return d.to === c && (d.flows[0]>0 || d.flows[1]>0);
+                                        return d.to === c && (d.flows[0]>min_flow || d.flows[1]>min_flow);
                                     }),{
                                     container:self,
                                     iso:iso,
                                     country:c+" 2015",
+                                    auto:true,
+                                    spacing:{
+                                        l:2,
+                                        r:2
+                                    },
                                     max:max,
                                     status:1,
                                     country_colors:[1,0],
                                     show_country_names:[1,0]
                                 })
                             })
-
+                    /*
 
                     d3.select("#countriesSM")
                         .selectAll("div.country")
@@ -238,7 +270,7 @@ export function init(el, context, config, mediator) {
                                         show_country_names:[1,0]
                                     })
                                 })
-                    
+                    */
                     return;
                     
                 };

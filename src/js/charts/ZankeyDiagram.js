@@ -18,20 +18,87 @@ export default function ZankeyDiagram(data,options) {
 		margins=options.margins;
 
 	var bar_width=15,
-		spacing=2;
+		_spacing=options.spacing || {
+			l:1,
+			r:1
+		},
+		_spacing_within={
+			l:0,
+			r:0
+		};
 
 	var extents;
 	computeExtents();
+	extents.all_flows=data.data.filter(function(d){return d.flows[CURRENT_STATUS]>0}).length;
 
-	var ky = (HEIGHT-(margins.top+margins.bottom)-(extents.length*spacing)) / extents.y[1];
+	
+
+
+
+	var ky = ((HEIGHT-(margins.top+margins.bottom)-(extents.length*Math.max(_spacing.l,_spacing.r))-(extents.all_flows*_spacing_within.r))) / extents.y[1] ;
+	
+	var canvas_height=HEIGHT-(margins.top+margins.bottom),
+		spacing_height=data.flows[CURRENT_STATUS].from.countries.length * _spacing.l,
+		h=canvas_height-spacing_height;
+
+	ky = h / extents.y[1];//data.flows[CURRENT_STATUS].from.total;
+
+	/*
+	if(extents.__length[CURRENT_STATUS]<extents.length) {
+		if(_spacing.l) {
+			_spacing.l *= (extents.length / extents.__length[CURRENT_STATUS])
+			
+		}
+	}
+	*/
+	var auto=options.auto;
+	if(auto) {
+
+
+		let flows_height=data.flows[CURRENT_STATUS].from.total*ky,
+			canvas_height=HEIGHT-(margins.top+margins.bottom);
+		if( flows_height < canvas_height) {
+			console.log(CURRENT_STATUS,canvas_height,flows_height,_spacing.l)
+			_spacing.l = (canvas_height - flows_height) / extents.__length[CURRENT_STATUS];
+			console.log(canvas_height/flows_height,_spacing.l)
+		}
+
+	}
 
 	extents.diffs_from=data.flows.map(function(d,i){
 								//console.log(extents.y[1],i,d.from.total,HEIGHT-(margins.top+margins.bottom),(d.from.total*ky + extents.diffs[i]*spacing))
-								var space=(extents.y[1] - d.from.total)*ky + (extents.length - d.from.countries.length)*spacing
+								//var space=(extents.y[1] - d.from.total)*ky + (extents.length - d.from.countries.length)*_spacing.l
 								//console.log("--->",space)
-								return space/2;
-							})
+								
 
+								var space=canvas_height - (data.flows[i].from.total*ky + extents.__length_from[i]*_spacing.l);
+								
+								/*console.log(
+									i,
+									HEIGHT-(margins.top+margins.bottom),
+									data.flows[i].from.total*ky,
+									extents.__length_from[i],
+									extents.__length_from[i]*_spacing.l
+								)*/
+
+								return space/2;
+							});
+
+	extents.diffs_to=data.flows.map(function(d,i){
+
+		var space=canvas_height - (data.flows[i].to.total*ky + extents.__length_to[i]*_spacing.r);	
+		console.log(
+			i,
+			HEIGHT-(margins.top+margins.bottom),
+			data.flows[i].to.total*ky,
+			extents.__length_to[i],
+			extents.__length_to[i],"*",_spacing.r,
+			extents.__length_to[i]*_spacing.r
+		)
+		return space/2;
+	})
+
+	console.log(extents)
 	computeNodes();
 
 	console.log(data)
@@ -133,6 +200,11 @@ export default function ZankeyDiagram(data,options) {
 		var flowset=data.flows[CURRENT_STATUS]
 		
 			var from_y=[extents.diffs_from[0],extents.diffs_from[1]];
+			if(auto) {
+				from_y=[0,0]
+			}
+			//from_y = [(extents.diffs[0]*(_spacing.l))/2+extents.diffs_from[0],(extents.diffs[1]*(_spacing.l))/2+extents.diffs_from[1]];
+			
 			flowset.from.countries.forEach(function(country,i){
 
 				//console.log("!!!",country)
@@ -154,17 +226,34 @@ export default function ZankeyDiagram(data,options) {
 
 					from_y[1]+=flow.flows[1]*ky ;
 					rel_y[1]+=flow.flows[1]*ky ;
+
+					from_y[0]+= _spacing_within.l;
+					from_y[1]+= _spacing_within.l; 
 				})
 				//console.log("1",from_y[0],spacing)
 				//console.log(spacing)
-				from_y[0]+= spacing;
-				from_y[1]+= spacing; 
+				from_y[0]+= _spacing.l;
+				from_y[1]+= _spacing.l; 
 				//console.log("2",from_y[0],spacing)
 			});
 
+			let from_height=[
+					data.flows[0].from.total*ky + extents.__length_from[0]*_spacing.l,
+					data.flows[1].from.total*ky + extents.__length_from[1]*_spacing.l
+				],
+				to_height=[
+					data.flows[0].to.total*ky + extents.__length_to[0]*_spacing.r,
+					data.flows[1].to.total*ky + extents.__length_to[1]*_spacing.r
+				]
+
+			
 
 
-			var to_y=[(extents.diffs[0]*spacing)/2+extents.diffs_from[0],(extents.diffs[1]*spacing)/2+extents.diffs_from[1]];
+			var to_y=[(extents.diffs[0]*(_spacing.l))/2+extents.diffs_from[0],(extents.diffs[1]*(_spacing.l))/2+extents.diffs_from[1]];
+			//to_y=[0,0]
+			to_y=[(from_height[0]-to_height[0])/2,(from_height[1]-to_height[1])/2]
+
+			to_y=[extents.diffs_to[0],extents.diffs_to[1]];
 			flowset.to.countries.forEach(function(country,i){
 				var rel_y=[0,0];
 				country.values.flows.forEach(function(flow){
@@ -184,9 +273,17 @@ export default function ZankeyDiagram(data,options) {
 
 					to_y[1]+=flow.flows[1]*ky;
 					rel_y[1]+=flow.flows[1]*ky;
+
+					to_y[0]+= _spacing_within.r;
+					to_y[1]+= _spacing_within.r;
+					//console.log("2",to_y[0], _spacing.r)
 				})
-				to_y[0]+=spacing;
-				to_y[1]+=spacing;
+				//console.log("1. TO Y",to_y[1])
+				to_y[0]+= _spacing.r;
+				to_y[1]+= _spacing.r;
+
+				//console.log("2. TO Y",to_y[1])
+
 			})
 
 		//})
@@ -198,6 +295,10 @@ export default function ZankeyDiagram(data,options) {
 	}
 	function computeExtents() {
 		
+		console.log("EXTENTS",d3.max(data.flows,function(d){
+			return d.from.total;
+		}));
+
 		extents= {
 			y:[0,options.max || d3.max(data.flows,function(d){
 				return d.from.total;
@@ -205,10 +306,27 @@ export default function ZankeyDiagram(data,options) {
 			length:d3.max(data.flows,function(d){
 				return d.from.countries.length;
 			}),
+			__length:[
+				data.data.filter(function(d){
+					return d.flows[0]>0
+				}).length,
+				data.data.filter(function(d){
+					return d.flows[1]>0
+				}).length
+			],
+			__length_from:[
+				data.flows[0].from.countries.length,
+				data.flows[1].from.countries.length
+			],
+			__length_to:[
+				data.flows[0].to.countries.length,
+				data.flows[1].to.countries.length
+			],
 			diffs:data.flows.map(function(d){
 				return d.from.countries.length - d.to.countries.length;
 			})
 		}
+
 
 		
 	}
@@ -266,41 +384,11 @@ export default function ZankeyDiagram(data,options) {
 		new_countries.append("rect")
 					.attr("class","bg")
 					.attr("x",-margins.left)
-					.attr("y",-spacing/2)
+					.attr("y",-_spacing.l/2)
 					.attr("width",margins.left*2)
 
 		from_countries.exit().remove();
 
-		
-
-		/*
-		var toCountry=new_countries
-							.selectAll("g.to-country")
-								.data(function(d){
-									//console.log(d)
-									return d.values.flows;
-								})
-								.enter()
-								.append("g")
-									.attr("class","to-country")
-									.attr("rel",function(d){
-										return d.to;
-									})
-		
-		toCountry.append("rect")
-			.attr("x",0)
-			.attr("y",0)
-			.attr("width",bar_width)
-			//.style("fill",function(d){
-			//	return color_scale(d.from)
-			//})
-			.attr("class",function(d) {
-				var area=data.countries.world.find(function(c){
-					return c.c === d.from;
-				})
-				return area.a;
-			})
-		*/
 		from_g.selectAll("g.country")
 								.transition()
 								.duration(1000)
@@ -309,16 +397,6 @@ export default function ZankeyDiagram(data,options) {
 									return "translate(0,"+(y)+")";
 								})
 								.style("opacity",1)
-								/*
-								.selectAll("g.to-country")
-									.attr("transform",function(d){
-										var y=(d.rel_from_y[CURRENT_STATUS]);
-										return "translate(0,"+y+")";
-									})
-									.select("rect")
-										.attr("height",function(d){
-											return (d.flows[CURRENT_STATUS]*ky);
-										})*/
 		
 		from_g.selectAll("g.country rect.country")
 					.attr("height",function(d){
@@ -326,12 +404,12 @@ export default function ZankeyDiagram(data,options) {
 					})
 		from_g.selectAll("g.country rect.bg")
 					.attr("height",function(d){
-						return d3.max([0.5,d.values.sizes[CURRENT_STATUS] * ky])+spacing/2;
+						return d3.max([0.5,d.values.sizes[CURRENT_STATUS] * ky])+(_spacing.l)/2;
 					})
 
 		from_g.selectAll("g.country text")
 			.classed("hidden",function(d){
-				return (d.values.sizes[CURRENT_STATUS]*ky)<(10-spacing*2);
+				return (d.values.sizes[CURRENT_STATUS]*ky)<(10-(_spacing.l)*2);
 			})
 			.attr("y",function(d){
 				return (d.values.sizes[CURRENT_STATUS]*ky)/2;
@@ -384,34 +462,10 @@ export default function ZankeyDiagram(data,options) {
 		new_countries.append("rect")
 					.attr("class","bg")
 					.attr("x",-margins.right)
-					.attr("y",-spacing/2)
+					.attr("y",-(_spacing.r)/2)
 					.attr("width",margins.right*2)
 
-		to_countries.exit().remove();
-
-		/*
-		var fromCountry=new_countries
-							.selectAll("g.to-country")
-								.data(function(d){
-									return d.values.flows;
-								})
-								.enter()
-								.append("g")
-									.attr("class","from-country")
-									.attr("rel",function(d){
-										return d.from;
-									})
-
-									
-		fromCountry.append("rect")
-			.attr("x",0)
-			.attr("y",0)
-			.attr("width",bar_width)
-			.attr("class",function(d){
-				return d.to.replace(/\s/gi,"").toLowerCase();
-			})
-		*/
-			
+		to_countries.exit().remove();			
 
 		to_g.selectAll("g.country")
 								.transition()
@@ -432,17 +486,20 @@ export default function ZankeyDiagram(data,options) {
 										})*/
 		to_g.selectAll("g.country rect.country")
 					.attr("height",function(d){
-						return d3.max([0.5,d.values.sizes[CURRENT_STATUS] * ky + 1]);
+
+						//console.log("------------>",d)
+
+						return d3.max([0.5,d.values.sizes[CURRENT_STATUS] * ky + (_spacing_within.r*extents.diffs[CURRENT_STATUS])]);
 					})
 
 		to_g.selectAll("g.country rect.bg")
 					.attr("height",function(d){
-						return d3.max([0.5,d.values.sizes[CURRENT_STATUS] * ky])+spacing/2;
+						return d3.max([0.5,d.values.sizes[CURRENT_STATUS] * ky + (_spacing_within.r*extents.diffs[CURRENT_STATUS])]);
 					})
 
 		to_g.selectAll("g.country text")
 			.classed("hidden",function(d){
-				return (d.values.sizes[CURRENT_STATUS]*ky)<(10-spacing*2);
+				return (d.values.sizes[CURRENT_STATUS]*ky)<(10-_spacing.r*2);
 			})
 			.attr("y",function(d){
 				return (d.values.sizes[CURRENT_STATUS]*ky)/2;
@@ -463,7 +520,7 @@ export default function ZankeyDiagram(data,options) {
 		var x0=0+bar_width+2,
 			y0=(flow.from_y[CURRENT_STATUS]) + (flow.flows[CURRENT_STATUS]*ky)/2,
 			x1=WIDTH-(margins.left+margins.right)-2,
-			y1=(flow.to_y[CURRENT_STATUS]) + (flow.flows[CURRENT_STATUS]*ky)/2;
+			y1=(flow.to_y[CURRENT_STATUS]) + (flow.flows[CURRENT_STATUS]*ky)/2 + 0.0001;
 
 		var xi = d3.interpolateNumber(x0, x1),
 			x2 = xi(curvature),
@@ -492,15 +549,15 @@ export default function ZankeyDiagram(data,options) {
 							.enter()
 							.append("g")
 								.attr("class","flow")
-								.attr("rel",function(d){
-									return d.from+"2"+d.to;
+								.attr("rel",function(d,i){
+									return i+": "+d.from+"2"+d.to;
 								})
 		flows.exit().remove();
 		
 		
 			new_flows.append("path")
 						.style("stroke",function(d){
-
+							//return;
 							var area=data.countries.world.find(function(c){
 								return c.c === d.from;
 							})

@@ -3,6 +3,11 @@
 @import "general";
 @import "share";
 @import "colors";
+@import "common";
+
+$gs-baseline: 12px !default;
+
+@import "page";
 @import "zankey_diagram";
 @import "migration";
 @import "sm";
