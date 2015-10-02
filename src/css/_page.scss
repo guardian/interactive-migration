@@ -1,4 +1,9 @@
 .header {
+
+	& > div {
+		float: left;
+	}
+
     position: relative;
     overflow: hidden;
     //border-bottom: 1px solid colour(neutral-1);
@@ -18,30 +23,50 @@
 		@include mq(desktop) {
 			@include fs-headline(9);
 			margin-top: 1em;
+			width:80%;
 		}
 
-		
+	}
+
+	.title {
+		// Breakpoints
+	    @include mq(tablet) { //9
+	       width: 100% ;
+	    }
+
+	    @include mq(desktop) { //12
+	        width: 20% ;
+	    }
+	}
+
+	.contents {
+		// Breakpoints
+	    @include mq(tablet) {
+	       width: 100% ;
+	    }
+
+	    @include mq(desktop) {
+	        width: 80% ;
+	    }
 	}
 }
 
 .header-date,
-.header-text {
-    color: colour(neutral-2);
-    
+.header-text,
+.intro-text {
+    color: #767676;
     @include mq(desktop) { //12
-        max-width: gs-span(8)
+        max-width: 80%;
     }
-
-    
-
     & > a {
         font-weight: bold;
     }
-
     @include fs-bodyCopy(2);
 
 }
-
+.intro-text {
+	color:#000;
+}
 .header-date {
     @include fs-textSans(1);
     margin-top: -($gs-baseline / 2);
@@ -49,10 +74,101 @@
     	font-weight: bold;
     }
 }
-
-.section {
-	h1 {
-
-	}
-	
+[data-sr] {
+	visibility: hidden;
 }
+.section {
+	position: relative;
+    //overflow: hidden;
+    border-top: 1px solid #ddd;
+	
+
+	@include mq(tablet) {	
+		margin-bottom:25px;
+		padding-bottom:25px;
+	}
+
+    > div {
+    	float:left;
+    }
+
+	.subsection {
+		width:100%;
+		overflow: hidden;
+		margin-bottom:50px;
+		
+		
+		.sub-intro {
+
+			p {
+			    //color: colour(neutral-2);
+			    @include fs-bodyCopy(2);
+
+			}
+		}
+		
+		h2 {
+			@include fs-header(5);
+			//font-weight:600;
+			margin-top: 5px;
+		}
+
+		
+
+		@include mq(desktop) {
+			.sub-intro {
+				padding-top:20px;
+				float:left;
+				width:25%;
+			}
+			.sub-contents {
+				float:left;
+				width:75%;
+				padding-top:20px;
+			}	
+		}
+	}
+	.subsection:first-child {
+		border-top:none;
+	}
+}
+.section:first-child {
+	border-top: none;
+}
+
+ul#chart-key {
+     
+        margin:0;
+        padding:0;
+        margin-top:10px;
+        height: 30px;
+        display: block;
+    
+
+    li {
+        @include fs-textSans(2);
+        float:left;
+        list-style: none;
+        padding-right: 15px;
+        margin-bottom:5px;
+    }
+}
+
+.key {
+    width: 10px;
+    height: 10px;
+    margin-right: 3px;
+    border-radius: 2px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 2px;
+
+   
+}
+
+#key-af{background-color:$africa;}
+#key-as{background-color:$asia;}
+#key-na{background-color:$namerica;}
+#key-la{background-color:$samerica;}
+#key-au{background-color:$oceania;}
+#key-eu{background-color:$europe;}

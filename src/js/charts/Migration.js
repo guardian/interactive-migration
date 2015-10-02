@@ -4,13 +4,13 @@ import ZankeyDiagram from './ZankeyDiagram'
 export default function Migration(data,options) {
 
 	console.log("Migration")
-	console.log(data)
+	//console.log(options.country,data)
 
 	var container=d3.select(options.container);
 
-	if(options.country) {
+	if(options.title) {
 		container.append("h4")
-					.text(options.country);	
+					.text(options.title);
 	}
 	
 
@@ -32,14 +32,21 @@ export default function Migration(data,options) {
 	;(function init(){
 
 		updateData();
-
-
+		//console.log("!!!!!!!!!!!!!!!!!!!!!!!")
+		//console.log(options.country,processed_data)
+		//console.log("!!!!!!!!!!!!!!!!!!!!!!!")
+		if(!processed_data.flows[options.status].from.countries.length>0) {
+			diagram.append("div")
+						.attr("class","none")
+						.text("?");
+			return;
+		}
 
 		zankey=new ZankeyDiagram(processed_data,{
 			container:diagram.node(),
-			margins:{
+			margins:options.margins || {
 				top:0,
-				left:80,
+				left:100,
 				right:100,
 				bottom:0
 			},
@@ -52,7 +59,10 @@ export default function Migration(data,options) {
 			status:options.status,
 			country_colors:options.country_colors,
 			show_country_names:options.show_country_names,
-			areas:["africa","americas","asia","europe","oceania","namerica","samerica"]
+			show_country_numbers:options.show_country_numbers,
+			highlight:options.highlight,
+			areas:["africa","americas","asia","europe","oceania","namerica","samerica"],
+			number_format:d3.format(",.0f")
 		});
 
 	}(data));
@@ -137,9 +147,9 @@ export default function Migration(data,options) {
 				if(region_codes[area]=="americas"){
 
 				}
+
 				return {
-					c:d.key,
-					//a:region_codes[area==="019"?subarea:area]
+					c: d.key,
 					a:region_codes[area]
 				}
 			}),

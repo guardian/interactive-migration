@@ -1,5 +1,6 @@
 import d3 from 'd3'
 import { palette1 } from '../lib/colors'
+import shortnames from '../../assets/data/shortnames.json!json'
 
 export default function ZankeyDiagram(data,options) {
 
@@ -122,6 +123,7 @@ export default function ZankeyDiagram(data,options) {
 				.append("svg")
 				.attr("class","zankey-diagram")
 				.on("mouseleave",function(d){
+					setHighlightMode(false);
 					showFlows();
 				})
 
@@ -189,6 +191,7 @@ export default function ZankeyDiagram(data,options) {
 	
 
 	update();
+	showFlows();
 
 	function computeNodes() {
 
@@ -355,6 +358,7 @@ export default function ZankeyDiagram(data,options) {
 								})
 								.style("opacity",0)
 								.on("mouseenter",function(d){
+									setHighlightMode(true);
 									showFlowsFrom(d.key);
 								})
 		if(options.show_country_names[0]) {
@@ -362,7 +366,21 @@ export default function ZankeyDiagram(data,options) {
 						.attr("x",-2)
 						.attr("dy","0.2em")
 						.text(function(d){
-							return d.key;
+							return shortnames[d.key] || d.key;
+						})
+			new_countries.append("text")
+						.attr("x",-2)
+						.attr("dy","16px")
+						.text(function(d){
+							return options.number_format(d.values.sizes[CURRENT_STATUS]);
+						})
+		}
+		if(options.show_country_numbers[0]) {
+			new_countries.append("text")
+						.attr("x",-2)
+						.attr("dy","16px")
+						.text(function(d){
+							return options.number_format(d.values.sizes[CURRENT_STATUS]);
 						})
 		}
 
@@ -408,8 +426,9 @@ export default function ZankeyDiagram(data,options) {
 					})
 
 		from_g.selectAll("g.country text")
-			.classed("hidden",function(d){
-				return (d.values.sizes[CURRENT_STATUS]*ky)<(10-(_spacing.l)*2);
+			.classed("hidden",function(d,i){
+				
+				return i>2 && (d.values.sizes[CURRENT_STATUS]*ky)<((10+(_spacing.l)*2)+options.show_country_numbers[0]?20:0);
 			})
 			.attr("y",function(d){
 				return (d.values.sizes[CURRENT_STATUS]*ky)/2;
@@ -431,6 +450,7 @@ export default function ZankeyDiagram(data,options) {
 								})
 								.style("opacity",0)
 								.on("mouseenter",function(d){
+									setHighlightMode(true);
 									showFlowsTo(d.key);
 								})
 
@@ -439,12 +459,24 @@ export default function ZankeyDiagram(data,options) {
 						.attr("x",bar_width+2)
 						.attr("dy","0.2em")
 						.attr("y",function(d){
-							//console.log(d);
 							return (d.values.sizes[CURRENT_STATUS]*ky)/2;
 						})
 						.text(function(d){
-							return d.key;
+							return shortnames[d.key] || d.key;
 						})
+						
+		}
+		if(options.show_country_numbers[1]) {
+			new_countries.append("text")
+						.attr("x",bar_width+2)
+						.attr("dy",options.show_country_names[1]?"16px":"0.2em")
+						.attr("y",function(d){
+							return (d.values.sizes[CURRENT_STATUS]*ky)/2;
+						})
+						.text(function(d){
+							return options.number_format(d.values.sizes[CURRENT_STATUS]);
+						})
+						
 		}
 
 		new_countries.append("rect")
@@ -498,8 +530,9 @@ export default function ZankeyDiagram(data,options) {
 					})
 
 		to_g.selectAll("g.country text")
-			.classed("hidden",function(d){
-				return (d.values.sizes[CURRENT_STATUS]*ky)<(10-_spacing.r*2);
+			.classed("hidden",function(d,i){
+				
+				return i>2 && (d.values.sizes[CURRENT_STATUS]*ky)<((10+_spacing.r*2)+options.show_country_numbers[1]?20:0);
 			})
 			.attr("y",function(d){
 				return (d.values.sizes[CURRENT_STATUS]*ky)/2;
@@ -586,9 +619,23 @@ export default function ZankeyDiagram(data,options) {
 						
 
 	}
+	function setHighlightMode(mode){
+		svg.classed("highlight",mode)
+	}
 	function showFlows() {
 		svg.selectAll(".highlight").classed("highlight",false);
-		svg.selectAll(".hidden:not(text)").classed("hidden",false);
+		
+		if(options.highlight) {
+			if(options.highlight.from) {
+				showFlowsFrom(options.highlight.from)
+			}
+			if(options.highlight.to) {
+				showFlowsTo(options.highlight.to)
+			}
+			return;
+		}
+
+		svg.selectAll(".hidden:not(text)").classed("hidden",true);
 	}
 	function showFlowsFrom(src) {
 

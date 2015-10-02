@@ -64,7 +64,7 @@ button:focus {outline:0 !important;}
 .share--twitter {
     background-color: #03b3ee;
     &::before {
-        background-image: url('/imgs/twitter.svg');
+        background-image: url('/assets/imgs/twitter.svg');
     }
     &:hover {
         background-color: #028dbc;
@@ -74,7 +74,7 @@ button:focus {outline:0 !important;}
 .share--facebook {
     background-color: #3067a3;
     &::before {
-        background-image: url('/imgs/facebook.svg');
+        background-image: url('/assets/imgs/facebook.svg');
     }
     &:hover {
         background-color: #244e7c;

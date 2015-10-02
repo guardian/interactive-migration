@@ -19,6 +19,7 @@ svg.zankey-diagram {
 	.country {
 		text {
 			@include fs-textSans(1);
+			fill:#767676;
 		}
 		text.hidden {
 			display: none;
@@ -27,10 +28,10 @@ svg.zankey-diagram {
 			text,
 			text.hidden {
 				display: block;
-				font-weight: bold;	
+				fill:black;
 			}
-			
 		}
+
 
 		rect.africa {
 			fill:$africa;
@@ -42,6 +43,9 @@ svg.zankey-diagram {
 			fill:$namerica;
 		}
 		rect.samerica {
+			fill:$samerica;
+		}
+		rect.americas {
 			fill:$samerica;
 		}
 		rect.oceania {
@@ -69,7 +73,7 @@ svg.zankey-diagram {
 	.flows {
 		.flow.hidden {
 			path {
-				//stroke-opacity:0.1;	
+				stroke-opacity:0.05;	
 			}
 		}
 		.flow.highlight {
@@ -78,5 +82,15 @@ svg.zankey-diagram {
 			}
 		}
 	}
-
+	
+	&.highlight {
+		.highlight {
+			text {
+				visibility: visible;
+			}
+		}
+		text {
+			visibility: hidden;
+		}
+	}
 }

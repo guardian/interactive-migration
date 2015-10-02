@@ -4,6 +4,7 @@ import iso from '../assets/data/iso.json!json'
 import d3 from 'd3'
 import queue from 'queue-async'
 import Migration from './charts/Migration'
+import scrollReveal from 'scrollreveal'
 
 import RAF from './lib/raf'
 
@@ -106,7 +107,7 @@ export function init(el, context, config, mediator) {
             var min_flow=1;
 
             (function checkInnerHTML() {
-                var b=document.querySelector("#migration");
+                var b=document.querySelector(".interactive-container");
 
                 if(b && b.getBoundingClientRect().height) {
                     
@@ -119,7 +120,12 @@ export function init(el, context, config, mediator) {
                             r:2
                         },
                         country_colors:[1,1],
-                        show_country_names:[1,1]
+                        show_country_names:[1,1],
+                        show_country_numbers:[1,1],
+                        highlight:{
+                            from:0,
+                            to:"Germany"
+                        }
                     })
                     
                     
@@ -132,10 +138,15 @@ export function init(el, context, config, mediator) {
                             r:2
                         },
                         country_colors:[1,1],
-                        show_country_names:[1,1]
+                        show_country_names:[1,1],
+                        show_country_numbers:[1,1],
+                        highlight:{
+                            from:0,
+                            to:"Germany"
+                        }
                     })
                     
-                    
+                    window.sr = new scrollReveal();
 
                     /*
                     d3.select("h3")
@@ -181,15 +192,74 @@ export function init(el, context, config, mediator) {
                    
                     var countries=["Germany","Hungary","Italy","United Kingdom","France","Belgium","Greece","Spain","Austria","Sweden","Finland"]
                     
-                    var str=`<div class="subsection">
-                                <div class="sub-intro">
-                                    <h2></h2>
-                                    <p></p>
+                    function htmlStuff(country) {
+                        var str=`<div class="sub-intro">
+                                    <h2>${country}</h2>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quas id tempore omnis, ullam vel, ipsam, enim nisi consectetur cum aspernatur</p>
                                 </div>
-                                <div class="sub-contents"></div>
-                            </div>`;
+                                <div class="sub-contents">
+                                    <div class="countries-row"></div>
+                                </div>`;
+                        return str;
+                    }
+                    
+                    var row=d3.select("#countriesSMCompare")
+                        .selectAll("div.subsection")
+                            .select("div.sub-contents")
+                                .selectAll("div.country-div")
+                                .data(function(d){
+                                    console.log(this.parentNode.getAttribute("rel"))
+                                    return [
+                                        {
+                                            c:this.parentNode.getAttribute("rel"),
+                                            year:1992,
+                                            status:0
+                                        },
+                                        {
+                                            c:this.parentNode.getAttribute("rel"),
+                                            year:2015,
+                                            status:1
+                                        }
+                                    ]
+                                })
+                                .enter()
+                                .append("div")
+                                    .attr("class","country-div")
+                                    .append("div")
+                                        .attr("class","migration")
+                                        .each(function(c){
+                                            var self=this;
+                                            new Migration(data.filter(function(d){
+                                                    return d.to === c.c && (d.flows[0]>min_flow || d.flows[1]>min_flow);
+                                                }),{
+                                                container:self,
+                                                iso:iso,
+                                                country:c.c,
+                                                title:`${c.year}`,
+                                                auto:true,
+                                                spacing:{
+                                                    l:2,
+                                                    r:2
+                                                },
+                                                margins:{
+                                                    top:5,
+                                                    left:c.status?120:85,
+                                                    right:c.status?65:65,
+                                                    bottom:15
+                                                },
+                                                max:max,
+                                                status:c.status,
+                                                country_colors:[1,1],
+                                                show_country_names:[1,0],
+                                                show_country_numbers:[1,1],
+                                                highlight:{
+                                                    from:0,
+                                                    to:c.c
+                                                }
+                                            })
+                                        })
 
-
+                    return;
                     var row=d3.select("#countriesSMCompare")
                         .selectAll("div.countries-row")
                         .data(countries)

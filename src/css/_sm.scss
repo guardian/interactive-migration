@@ -20,25 +20,42 @@
 .sm-compare {
 	
 
-	& > .countries-row {
-		width:100%;
-		overflow: hidden;
-
 		.country-div {
 			float:left;
-			width:40%;
-			margin:0 5%;
+			width:50%;
+			margin:0;
+
+			.diagram {
+				margin-top:30px;
+			}
 		}
 
-		
-	
 		h4 {
 			@include fs-header(1);
 			text-align: center;
 			margin:0;
 			padding: 0;
 		}
+		
+		@include mq(desktop) {
+			
+			.country-div:first-child {
+				width:calc(50% - 1px);
+				border-right:1px solid #ddd;
 
-	}
+				h4 {
+					text-align: right;
+					margin-right:20px;
+				}
+			}
+			h4 {
+				text-align: left;
+				margin-left:20px;
+			}
+			
+		}
+		
+	
+		
 
 } 
