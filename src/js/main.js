@@ -8,11 +8,9 @@ import scrollReveal from 'scrollreveal'
 
 import RAF from './lib/raf'
 
+
 export function init(el, context, config, mediator) {
     iframeMessenger.enableAutoResize();
-
-    
-
     
 
     //createViz(1992,"#migration");
@@ -111,6 +109,12 @@ export function init(el, context, config, mediator) {
 
                 if(b && b.getBoundingClientRect().height) {
                     
+                    d3.select("#m1992 h4")
+                        .text(d3.format(",.0f")(d3.sum(data,function(d){return d.flows[0]}))+" asylum applicants")
+                    d3.select("#m2015 h4")
+                        .text(d3.format(",.0f")(d3.sum(data,function(d){return d.flows[1]}))+" asylum applicants")
+                   
+
                     var migration1992=new Migration(data.filter(function(d){return d.flows[0]>min_flow || d.flows[1]>min_flow}),{
                         container:"#m1992 > .migration",
                         iso:iso,
@@ -120,6 +124,7 @@ export function init(el, context, config, mediator) {
                             r:2
                         },
                         country_colors:[1,1],
+                        year:1992,
                         show_country_names:[1,1],
                         show_country_numbers:[1,1],
                         highlight:{
@@ -138,6 +143,7 @@ export function init(el, context, config, mediator) {
                             r:2
                         },
                         country_colors:[1,1],
+                        year:2015,
                         show_country_names:[1,1],
                         show_country_numbers:[1,1],
                         highlight:{

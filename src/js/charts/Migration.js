@@ -42,6 +42,8 @@ export default function Migration(data,options) {
 			return;
 		}
 
+		
+       
 		zankey=new ZankeyDiagram(processed_data,{
 			container:diagram.node(),
 			margins:options.margins || {

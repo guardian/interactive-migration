@@ -24,6 +24,14 @@
 			}
 		}
 	}
+	h4 {
+		@include fs-header(1);
+		text-align: center;
+		margin:0;
+		margin-bottom: 15px;
+		padding: 0;
+		
+	}
 }
 
 .migration {
