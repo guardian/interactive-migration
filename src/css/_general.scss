@@ -59,6 +59,8 @@ a {
 .fonts__sans { @include f-headlineSans; }
 .fonts__text-sans { @include fs-textSans(4); }
 
-.section {
-    margin-bottom:50px;
+@include mq(tablet) {
+    .section {
+        margin-bottom:50px;
+    }
 }

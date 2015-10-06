@@ -2,10 +2,12 @@
 	overflow: hidden;
 
 	& > .country-div {
-		width:33%;
+
 		
-		float:left;
-	
+		@include mq(tablet) {
+			width:33%;
+			float:left;
+		}
 		h4 {
 			@include fs-header(1);
 			text-align: center;
@@ -19,15 +21,17 @@
 
 .sm-compare {
 	
-
+		
 		.country-div {
-			float:left;
-			width:50%;
-			margin:0;
-
-			.diagram {
-				margin-top:30px;
+			@include mq(tablet) {
+				float:left;
+				width:50%;
+				margin:0;
+				.diagram {
+					margin-top:30px;
+				}
 			}
+			
 		}
 
 		h4 {

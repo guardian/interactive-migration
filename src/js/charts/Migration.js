@@ -3,8 +3,8 @@ import ZankeyDiagram from './ZankeyDiagram'
 
 export default function Migration(data,options) {
 
-	console.log("Migration")
-	//console.log(options.country,data)
+	//console.log("Migration")
+	////console.log(options.country,data)
 
 	var container=d3.select(options.container);
 
@@ -32,25 +32,27 @@ export default function Migration(data,options) {
 	;(function init(){
 
 		updateData();
-		//console.log("!!!!!!!!!!!!!!!!!!!!!!!")
-		//console.log(options.country,processed_data)
-		//console.log("!!!!!!!!!!!!!!!!!!!!!!!")
+		////console.log("!!!!!!!!!!!!!!!!!!!!!!!")
+		////console.log(options.country,processed_data)
+		////console.log("!!!!!!!!!!!!!!!!!!!!!!!")
 		if(!processed_data.flows[options.status].from.countries.length>0) {
 			diagram.append("div")
 						.attr("class","none")
-						.text("?");
+						.text("...");
 			return;
 		}
 
+		//console.log(processed_data)
+
 		
-       
+
 		zankey=new ZankeyDiagram(processed_data,{
 			container:diagram.node(),
 			margins:options.margins || {
-				top:0,
+				top:15,
 				left:100,
 				right:100,
-				bottom:0
+				bottom:15
 			},
 			width:width,
 			height:height,
@@ -64,18 +66,20 @@ export default function Migration(data,options) {
 			show_country_numbers:options.show_country_numbers,
 			highlight:options.highlight,
 			areas:["africa","americas","asia","europe","oceania","namerica","samerica"],
-			number_format:d3.format(",.0f")
+			number_format:d3.format(",.0f"),
+			isSmallScreen:options.isSmallScreen,
+			topAligned:options.topAligned,
+			legend:options.legend,
+			inner_labels:options.inner_labels?options.inner_labels:[0,0],
+			mouseoverCallback:options.mouseoverCallback,
+			mouseleaveCallback:options.mouseleaveCallback
 		});
 
 	}(data));
 
 	function updateData() {
 
-		data=data.filter(function(d){
-			return d.from!=="Asia" && d.from!=="Africa" && d.from!=="Oceania" 
-					&& d.from!== "America" && d.from!=="Unknown" && d.from !== "Stateless"
-					&& d.from !== "Central and Eastern Europe" && d.from !== "Other european countries"
-		})
+		
 
 		var from_data=d3.nest()
 						.key(function(d){
@@ -144,7 +148,7 @@ export default function Migration(data,options) {
 					area=iso?iso["region-code"]:0,
 					subarea=iso?iso["sub-region-code"]:0;
 				if(!area) {
-					console.log("NOT FOUND",d.key,area,iso)
+					//console.log("NOT FOUND",d.key,area,iso)
 				}
 				if(region_codes[area]=="americas"){
 
@@ -243,6 +247,11 @@ export default function Migration(data,options) {
 			countries: countries
 		}
 
+	}
+
+	this.showFlows=function(country,from) {
+		//console.log(country,from)
+		zankey.showFlows(country,from);
 	}
 
 	this.changeStatus=function(status) {

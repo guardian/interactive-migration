@@ -5,8 +5,8 @@ import d3 from 'd3'
 import queue from 'queue-async'
 import Migration from './charts/Migration'
 import scrollReveal from 'scrollreveal'
-
 import RAF from './lib/raf'
+import { getViewport } from './lib/detect'
 
 
 export function init(el, context, config, mediator) {
@@ -89,7 +89,7 @@ export function init(el, context, config, mediator) {
                 if(row) {
 
                     row.flows[0]=d1992.total;
-                    //console.log("FOUND",row)
+                    ////console.log("FOUND",row)
                 } else {
                     data.push({
                         from:d1992.from,
@@ -99,37 +99,116 @@ export function init(el, context, config, mediator) {
                 }
             })
 
-            //console.log(data)
+            /*console.log(d3.sum(data1992.filter(function(d){return d.from==="Asia"}),function(d){
+                return d.total
+            }))*/
+            var sum=0;
+            data1992.forEach(function(d){
+                var r=iso.find(function(c){
+                    return (c.name==d.from || c.name2==d.from) && c["region-code"]=="142"
+                })
+                if(r) {
+                    ////console.log(d.from,d.to,d.total)    
+                    sum+=d.total;
+
+
+                }
+                
+            })
+
+            data1992.forEach(function(d){
+                var r=iso.find(function(c){
+                    return (c.name==d.from || c.name2==d.from)
+                })
+                if(r) {
+                    d.region=r["region-code"];
+                    d.subregion=r["sub-region-code"]
+                }
+                
+            })
+
+            var region_codes={
+                "002":"africa",
+                "019":"americas",
+                "142":"asia",
+                "150":"europe",
+                "009":"oceania"
+            }
+            var sub_region_codes={
+                "021":"namerica",
+                "005":"samerica",
+                "013":"samerica"
+                //Central and Eastern Europe
+                //Other european countries
+                //America
+                //Asia
+                //Africa
+            }
+
+            var nested=d3.nest()
+                .key(function(d){
+                     return region_codes[d.region];
+                })
+                .entries(data1992)
+
+            ////console.log(nested)
+            //return;
+
+            data=data.filter(function(d){
+                return d.from!=="Asia" && d.from!=="Africa" && d.from!=="Oceania" 
+                        && d.from!== "America" && d.from!=="Unknown" && d.from !== "Stateless"
+                        && d.from !== "Central and Eastern Europe" && d.from !== "Other european countries"
+            })
+
+            ////console.log(data)
             el.innerHTML = mainHTML.replace(/%assetPath%/g, config.assetPath);
 
-            var min_flow=1;
+            var min_flow=0;
 
             (function checkInnerHTML() {
                 var b=document.querySelector(".interactive-container");
 
                 if(b && b.getBoundingClientRect().height) {
                     
-                    d3.select("#m1992 h4")
-                        .text(d3.format(",.0f")(d3.sum(data,function(d){return d.flows[0]}))+" asylum applicants")
-                    d3.select("#m2015 h4")
-                        .text(d3.format(",.0f")(d3.sum(data,function(d){return d.flows[1]}))+" asylum applicants")
-                   
+                    var viewport=getViewport();
+                    var isSmallScreen=viewport.width<740;
 
+                    d3.select("#m1992 h3")
+                        .text(d3.format(",.0f")(d3.sum(data,function(d){return d.flows[0]})))
+                    d3.select("#m2015 h3")
+                        .text(d3.format(",.0f")(d3.sum(data,function(d){return d.flows[1]})))
+                   
+                    
                     var migration1992=new Migration(data.filter(function(d){return d.flows[0]>min_flow || d.flows[1]>min_flow}),{
                         container:"#m1992 > .migration",
                         iso:iso,
                         status:0,
                         spacing:{
-                            l:2,
-                            r:2
+                            l:0,
+                            r:0
                         },
+                        margins:isSmallScreen?{
+                            top:5,
+                            left:70,
+                            right:70,
+                            bottom:15 
+                        }:null,
                         country_colors:[1,1],
                         year:1992,
                         show_country_names:[1,1],
                         show_country_numbers:[1,1],
+                        inner_labels:[1,1],
+                        topAligned:isSmallScreen,
+                        legend:true,
                         highlight:{
                             from:0,
                             to:"Germany"
+                        },
+                        mouseoverCallback:function(d){
+                            migration2015.showFlows(d.d,d.from);
+                        },
+                        mouseleaveCallback:function(d){
+                            migration2015.showFlows();
                         }
                     })
                     
@@ -139,16 +218,31 @@ export function init(el, context, config, mediator) {
                         iso:iso,
                         status:1,
                         spacing:{
-                            l:2,
-                            r:2
+                            l:0,
+                            r:0
                         },
+                        margins:isSmallScreen?{
+                            top:5,
+                            left:70,
+                            right:70,
+                            bottom:15 
+                        }:null,
                         country_colors:[1,1],
                         year:2015,
                         show_country_names:[1,1],
                         show_country_numbers:[1,1],
+                        inner_labels:[1,1],
+                        topAligned:isSmallScreen,
+                        legend:true,
                         highlight:{
                             from:0,
                             to:"Germany"
+                        },
+                        mouseoverCallback:function(d){
+                            migration1992.showFlows(d.d,d.from);
+                        },
+                        mouseleaveCallback:function(d){
+                            migration1992.showFlows();
                         }
                     })
                     
@@ -180,7 +274,7 @@ export function init(el, context, config, mediator) {
                                 })
                                 .entries(data)
 
-                    console.log(maxes)
+                    //console.log(maxes)
 
                     var max=d3.max([
 
@@ -193,7 +287,7 @@ export function init(el, context, config, mediator) {
 
                     ])
 
-                    console.log(max)
+                    //console.log(max)
 
                    
                     var countries=["Germany","Hungary","Italy","United Kingdom","France","Belgium","Greece","Spain","Austria","Sweden","Finland"]
@@ -208,23 +302,25 @@ export function init(el, context, config, mediator) {
                                 </div>`;
                         return str;
                     }
-                    
+                    var flows=[];
                     var row=d3.select("#countriesSMCompare")
                         .selectAll("div.subsection")
                             .select("div.sub-contents")
                                 .selectAll("div.country-div")
-                                .data(function(d){
-                                    console.log(this.parentNode.getAttribute("rel"))
+                                .data(function(d,i){
+                                    //console.log(this.parentNode.getAttribute("rel"))
                                     return [
                                         {
                                             c:this.parentNode.getAttribute("rel"),
                                             year:1992,
-                                            status:0
+                                            status:0,
+                                            index:i
                                         },
                                         {
                                             c:this.parentNode.getAttribute("rel"),
                                             year:2015,
-                                            status:1
+                                            status:1,
+                                            index:i
                                         }
                                     ]
                                 })
@@ -235,34 +331,55 @@ export function init(el, context, config, mediator) {
                                         .attr("class","migration")
                                         .each(function(c){
                                             var self=this;
-                                            new Migration(data.filter(function(d){
-                                                    return d.to === c.c && (d.flows[0]>min_flow || d.flows[1]>min_flow);
-                                                }),{
-                                                container:self,
-                                                iso:iso,
-                                                country:c.c,
-                                                title:`${c.year}`,
-                                                auto:true,
-                                                spacing:{
-                                                    l:2,
-                                                    r:2
-                                                },
-                                                margins:{
-                                                    top:5,
-                                                    left:c.status?120:85,
-                                                    right:c.status?65:65,
-                                                    bottom:15
-                                                },
-                                                max:max,
-                                                status:c.status,
-                                                country_colors:[1,1],
-                                                show_country_names:[1,0],
-                                                show_country_numbers:[1,1],
-                                                highlight:{
-                                                    from:0,
-                                                    to:c.c
-                                                }
-                                            })
+                                            
+                                            if(!flows[c.index]) {
+                                                flows.push([])    
+                                            }
+                                            flows[c.index].push(
+                                                    new Migration(data.filter(function(d){
+                                                        return d.to === c.c && (d.flows[0]>min_flow || d.flows[1]>min_flow);
+                                                    }),{
+                                                    container:self,
+                                                    iso:iso,
+                                                    country:c.c,
+                                                    title:`${c.year}`,
+                                                    auto:true,
+                                                    spacing:{
+                                                        l:2,
+                                                        r:0
+                                                    },
+                                                    isSmallScreen:isSmallScreen,
+                                                    legend:false,
+                                                    inner_labels:[0,0],
+                                                    margins:isSmallScreen?{
+                                                        top:5,
+                                                        left:80,
+                                                        right:70,
+                                                        bottom:15 
+                                                    }:{
+                                                        top:5,
+                                                        left:c.status?120:85,
+                                                        right:c.status?65:65,
+                                                        bottom:15
+                                                    },
+                                                    max:max,
+                                                    status:c.status,
+                                                    country_colors:[1,1],
+                                                    show_country_names:[1,isSmallScreen?1:0],
+                                                    show_country_numbers:[1,1],
+                                                    topAligned:false,
+                                                    highlight:{
+                                                        from:0,
+                                                        to:c.c
+                                                    },
+                                                    mouseoverCallback:function(d){
+                                                        flows[c.index][1-c.status].showFlows(d.d,d.from);
+                                                    },
+                                                    mouseleaveCallback:function(d){
+                                                        flows[c.index][1-c.status].showFlows();
+                                                    }
+                                                })
+                                            );
                                         })
 
                     return;

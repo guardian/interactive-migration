@@ -71,26 +71,67 @@ svg.zankey-diagram {
 	}
 
 	.flows {
+		text {
+			@include fs-textSans(1);
+			fill:#000;
+			visibility: hidden;
+		}
+		text.to {
+			text-anchor:end;
+		}
 		.flow.hidden {
 			path {
-				stroke-opacity:0.05;	
+				stroke-opacity:1;
+				stroke:#eee !important;
 			}
 		}
 		.flow.highlight {
 			path {
-				stroke-opacity:0.9;	
+				stroke-opacity:0.9;
+			}
+		}
+		.flow.from {
+			text.to {
+				visibility: visible;
+			}
+		}
+		.flow.to {
+			text.from {
+				visibility: visible;
 			}
 		}
 	}
 	
 	&.highlight {
-		.highlight {
-			text {
-				visibility: visible;
-			}
+		.from,
+		.to {
+			.highlight {
+				text {
+					visibility: visible;
+				}
+			}	
 		}
-		text {
+		
+		.from text,
+		.to text {
 			visibility: hidden;
+		}
+	}
+
+	.legend {
+		text {
+			@include fs-textSans(1);
+			font-size: 11px;
+			fill:#767676;
+			text-anchor:end;
+		}
+		text.to {
+			text-anchor:start;
+		}
+		line {
+			stroke-width:1;
+			stroke:#767676;
+			shape-rendering:crispEdges;
 		}
 	}
 }

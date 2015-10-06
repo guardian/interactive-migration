@@ -8,7 +8,9 @@
     overflow: hidden;
     //border-bottom: 1px solid colour(neutral-1);
     border-top:none !important;
-    padding-bottom: ($gs-baseline * 2);
+    @include mq(tablet) {
+    	padding-bottom: ($gs-baseline * 2);
+	}
     z-index: 9999;
 
     h1 {
@@ -29,9 +31,11 @@
 	}
 
 	.title {
+		display: none;
 		// Breakpoints
 	    @include mq(tablet) { //9
-	       width: 100% ;
+			display: block;
+	       	width: 100% ;
 	    }
 
 	    @include mq(desktop) { //12
