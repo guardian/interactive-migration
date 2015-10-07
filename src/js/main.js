@@ -154,11 +154,11 @@ export function init(el, context, config, mediator) {
             ////console.log(nested)
             //return;
 
-            /*data=data.filter(function(d){
+            data=data.filter(function(d){
                 return d.from!=="Asia" && d.from!=="Africa" && d.from!=="Oceania" 
                         && d.from!== "America" && d.from!=="Unknown" && d.from !== "Stateless"
                         && d.from !== "Central and Eastern Europe" && d.from !== "Other european countries"
-            })*/
+            })
 
             ////console.log(data)
             el.innerHTML = mainHTML.replace(/%assetPath%/g, config.assetPath);
@@ -315,10 +315,10 @@ export function init(el, context, config, mediator) {
                                     .each(function(c){
                                         var self=this;
                                         
-                                        if(!flows.to[c.index]) {
-                                            flows.to.push([])    
+                                        if(!flows.from[c.index]) {
+                                            flows.from.push([])    
                                         }
-                                        flows.to[c.index].push(
+                                        flows.from[c.index].push(
                                                 new Migration(data.filter(function(d){
                                                     return d.from === c.c && (d.flows[0]>min_flow || d.flows[1]>min_flow);
                                                 }),{
@@ -333,7 +333,7 @@ export function init(el, context, config, mediator) {
                                                 },
                                                 isSmallScreen:isSmallScreen,
                                                 legend:false,
-                                                inner_labels:[0,0],
+                                                inner_labels:[0,1],
                                                 margins:isSmallScreen?{
                                                     top:5,
                                                     left:70,
@@ -354,13 +354,13 @@ export function init(el, context, config, mediator) {
                                                 highlight:{
                                                     from:c.c,
                                                     to:0
-                                                },
+                                                }/*,
                                                 mouseoverCallback:function(d){
                                                     flows.to[c.index][1-c.status].showFlows(d.d,d.from);
                                                 },
                                                 mouseleaveCallback:function(d){
                                                     flows.to[c.index][1-c.status].showFlows();
-                                                }
+                                                }*/
                                             })
                                         );
                                     })
@@ -412,7 +412,7 @@ export function init(el, context, config, mediator) {
                                                 },
                                                 isSmallScreen:isSmallScreen,
                                                 legend:false,
-                                                inner_labels:[0,0],
+                                                inner_labels:[1,0],
                                                 margins:isSmallScreen?{
                                                     top:5,
                                                     left:80,

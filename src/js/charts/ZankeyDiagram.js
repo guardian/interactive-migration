@@ -139,6 +139,7 @@ export default function ZankeyDiagram(data,options) {
 				.append("svg")
 				.attr("class","zankey-diagram")
 				.on("mouseleave",function(d){
+					return;
 					showFlows();
 					if(options.mouseleaveCallback) {
 						options.mouseleaveCallback();
@@ -216,7 +217,7 @@ export default function ZankeyDiagram(data,options) {
 	
 
 	update();
-	showFlows();
+	//showFlows();
 
 	function computeNodes() {
 
@@ -387,11 +388,15 @@ export default function ZankeyDiagram(data,options) {
 									return d.key;
 								})
 								.style("opacity",0)
-								.on("mouseenter",function(d){
-									showFlows();
-									setHighlightMode(true);
+								.on("click",function(d){
+									
+									//showFlows();
+									
+									//setHighlightMode(true);
+									
 									showFlowsFrom(d.key);
-
+									
+									
 									if(options.mouseoverCallback) {
 										options.mouseoverCallback({
 											d:d,
@@ -490,8 +495,9 @@ export default function ZankeyDiagram(data,options) {
 									return d.key;
 								})
 								.style("opacity",0)
-								.on("mouseenter",function(d){
-									setHighlightMode(true);
+								.on("click",function(d){
+									
+									//setHighlightMode(true);
 									showFlowsTo(d.key);
 
 									if(options.mouseoverCallback) {
@@ -654,26 +660,49 @@ export default function ZankeyDiagram(data,options) {
 						//return color_scale(d.to)
 					})
 		if(options.inner_labels[0]) {
-			new_flows.append("text")
+			new_flows
+				.append("text")
 				.attr("class","from")
-				.attr("x",bar_width+5)
+				.attr("x",-5)
+				//.attr("x",bar_width+5)
+				.attr("y",function(flow){
+					return (flow.from_y[CURRENT_STATUS]) + (flow.flows[CURRENT_STATUS]*ky)/2+15
+				})
+				.text(function(flow){
+					return options.number_format(flow.flows[CURRENT_STATUS]);
+				})
+			new_flows
+				.append("text")
+				.attr("class","from from-country")
+				.attr("x",-5)
 				.attr("y",function(flow){
 					return (flow.from_y[CURRENT_STATUS]) + (flow.flows[CURRENT_STATUS]*ky)/2
 				})
 				.text(function(flow){
-					return options.number_format(flow.flows[CURRENT_STATUS]);
+					return flow.from
 				})
 		}
 		
 		if(options.inner_labels[1]) {
 			new_flows.append("text")
 					.attr("class","to")
-					.attr("x",WIDTH-(margins.left+margins.right)-2)
+					//.attr("x",WIDTH-(margins.left+margins.right)-2)
+					.attr("x",WIDTH-(margins.left+margins.right)+bar_width+2)
+					.attr("y",function(flow){
+						return (flow.to_y[CURRENT_STATUS]) + (flow.flows[CURRENT_STATUS]*ky)/2+15
+					})
+					.text(function(flow){
+						return options.number_format(flow.flows[CURRENT_STATUS]);
+					})
+			new_flows.append("text")
+					.attr("class","to")
+					//.attr("x",WIDTH-(margins.left+margins.right)-2)+
+					.attr("x",WIDTH-(margins.left+margins.right)+bar_width+2)
 					.attr("y",function(flow){
 						return (flow.to_y[CURRENT_STATUS]) + (flow.flows[CURRENT_STATUS]*ky)/2
 					})
 					.text(function(flow){
-						return options.number_format(flow.flows[CURRENT_STATUS]);
+						return flow.to
 					})
 		}
 		
@@ -702,7 +731,7 @@ export default function ZankeyDiagram(data,options) {
 			showFlows();
 			return;
 		}
-		setHighlightMode(true);
+		//setHighlightMode(true);
 		if(from) {
 			//console.log("!!! showing flows from",country.key)
 			showFlowsFrom(country.key);
@@ -728,19 +757,29 @@ export default function ZankeyDiagram(data,options) {
 
 		svg.selectAll(".hidden:not(text)").classed("hidden",true);
 	}
+	function showHideMainLabelsFrom(){
+
+	}
+	function showHideMainLabelsTo(){
+
+	}
 	function showFlowsFrom(src) {
 
 		from_g.selectAll("g.country")
 			.classed("highlight",function(d){
 				return d.key === src;
 			})
+		if(!options.inner_labels[1]) {
+			to_g.selectAll("g.country")
+				.classed("highlight",function(d){
+					return 0;
+					//return d.key === src;
+				})
+		}
 
 		flows_g
 			.selectAll("g.flow")
-			//.classed("hidden",true)
-			.classed("hidden",function(d){
-				return d.from !== src;
-			})
+			.classed("highlight",false)
 			.classed("from",false)
 			.classed("to",false)
 			.filter(function(d){
@@ -759,11 +798,9 @@ export default function ZankeyDiagram(data,options) {
 
 		flows_g
 			.selectAll("g.flow")
+			.classed("highlight",false)
 			.classed("from",false)
 			.classed("to",false)
-			.classed("hidden",function(d){
-				return d.to !== dst;
-			})
 			.filter(function(d){
 				return d.to === dst;
 			})

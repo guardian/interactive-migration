@@ -3,16 +3,7 @@ svg.zankey-diagram {
 	//background-color: #ddd;
 	
 
-	path {
-		stroke:#333;
-		stroke-width:1;
-		stroke-opacity: 0.9;
-		fill:none;
-	}
-
-	path.opaque {
-		stroke-opacity: 0.1;
-	}
+	
 
 	
 
@@ -20,14 +11,11 @@ svg.zankey-diagram {
 		text {
 			@include fs-textSans(1);
 			fill:#767676;
-		}
-		text.hidden {
-			display: none;
+			visibility: hidden;
 		}
 		&.highlight {
-			text,
-			text.hidden {
-				display: block;
+			text {
+				visibility: visible;
 				fill:black;
 			}
 		}
@@ -71,6 +59,22 @@ svg.zankey-diagram {
 	}
 
 	.flows {
+		
+		//default
+		/*path {
+			stroke-opacity:1;
+			stroke:#eee !important;
+		}*/
+
+		path {
+			fill:none;
+			stroke-opacity:0.1;
+		}
+
+		path.opaque {
+			stroke: #eee !important;
+		}
+
 		text {
 			@include fs-textSans(1);
 			fill:#000;
@@ -79,12 +83,7 @@ svg.zankey-diagram {
 		text.to {
 			text-anchor:end;
 		}
-		.flow.hidden {
-			path {
-				stroke-opacity:1;
-				stroke:#eee !important;
-			}
-		}
+		
 		.flow.highlight {
 			path {
 				stroke-opacity:0.9;
@@ -93,11 +92,19 @@ svg.zankey-diagram {
 		.flow.from {
 			text.to {
 				visibility: visible;
+				text-anchor:start;
+			}
+			text.to-country {
+				text-anchor:start;
 			}
 		}
 		.flow.to {
 			text.from {
 				visibility: visible;
+				text-anchor:end;
+			}
+			text.from-country {
+				text-anchor:end;
 			}
 		}
 	}
@@ -107,14 +114,14 @@ svg.zankey-diagram {
 		.to {
 			.highlight {
 				text {
-					visibility: visible;
+					//visibility: visible;
 				}
 			}	
 		}
 		
 		.from text,
 		.to text {
-			visibility: hidden;
+			//visibility: hidden;
 		}
 	}
 
