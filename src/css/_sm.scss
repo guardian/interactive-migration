@@ -59,7 +59,13 @@
 			
 		}
 		
-	
-		
 
 } 
+.sm-compare-from {
+	@include mq(desktop) {
+			
+			.country-div:first-child {
+				border-right:none;
+			}
+	}
+}

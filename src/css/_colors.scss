@@ -4,6 +4,7 @@ $oceania:#72af7e;
 $namerica:#a60947;
 $samerica:#ff5b3a;
 $americas:#ff5b3a;
+$america:$americas;
 $asia:#ffce4b;
 
 $hungary:#CE1126;
@@ -43,13 +44,18 @@ $croatia:#171695;
 
 .africa {
 	stop-color:$africa;
-	fill-color:$africa;
+	fill:$africa;
 }
-.europe {
+.europe,
+.centralandeasterneurope,
+.othereuropeancountries {
 	stop-color:$europe;
+	fill:$europe;
 }
+.america,
 .americas {
 	stop-color:$americas;
+	fill:$americas;
 }
 .namerica {
 	stop-color:$namerica;
@@ -62,6 +68,12 @@ $croatia:#171695;
 }
 .asia {
 	stop-color:$asia;
+	fill:$asia;
+}
+.unknown,
+.stateless {
+	stop-color:#63717a;
+	fill:#63717a;
 }
 
 $countries-list: hungary, germany, italy, unitedkingdom, austria, france, belgium, netherlands, sweden, spain, bulgaria, denmark, greece, poland, portugal, finland, ireland,cyprus,malta,czechrepublic,romania,luxembourg,lithuania,latvia,slovenia,estonia,slovakia,croatia;

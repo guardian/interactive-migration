@@ -83,7 +83,7 @@
 }
 .section {
 	position: relative;
-    //overflow: hidden;
+    overflow: hidden;
     border-top: 1px solid #ddd;
 	
 
@@ -95,7 +95,13 @@
     > div {
     	float:left;
     }
-
+	.section-title {
+		h2 {
+			@include fs-header(5);
+			font-size:28px;
+			margin-bottom: 0;
+		}
+	}
 	.subsection {
 		width:100%;
 		overflow: hidden;
@@ -112,7 +118,7 @@
 		}
 		
 		h2 {
-			@include fs-header(5);
+			@include fs-header(4);
 			//font-weight:600;
 			margin-top: 5px;
 		}

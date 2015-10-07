@@ -436,15 +436,15 @@ export default function ZankeyDiagram(data,options) {
 							return c.c === d.key;
 						})
 						if(!area.a) {
-							return "country gray";
+							//return "country gray";
 						}
-						return "country "+area.a;
+						return "country "+(area.a || d.key.replace(/\s/gi,"").toLowerCase());
 					})
 		new_countries.append("rect")
 					.attr("class","bg")
 					.attr("x",-margins.left)
 					.attr("y",-_spacing.l/2)
-					.attr("width",margins.left*2)
+					.attr("width",(WIDTH-(margins.right+margins.left))/2+margins.left);//margins.left*2)
 
 		from_countries.exit().remove();
 
@@ -463,7 +463,7 @@ export default function ZankeyDiagram(data,options) {
 					})
 		from_g.selectAll("g.country rect.bg")
 					.attr("height",function(d){
-						return d3.max([0.5,d.values.sizes[CURRENT_STATUS] * ky])+(_spacing.l)/2;
+						return d3.max([0.5,d.values.sizes[CURRENT_STATUS] * ky])+(_spacing.l);
 					})
 
 		from_g.selectAll("g.country text")
@@ -542,9 +542,9 @@ export default function ZankeyDiagram(data,options) {
 		
 		new_countries.append("rect")
 					.attr("class","bg")
-					.attr("x",-margins.right)
+					.attr("x",-(WIDTH-(margins.right+margins.left))/2)
 					.attr("y",-(_spacing.r)/2)
-					.attr("width",margins.right*2)
+					.attr("width",(WIDTH-(margins.right+margins.left))/2+margins.right)//margins.right*2)
 
 		to_countries.exit().remove();			
 
@@ -575,7 +575,7 @@ export default function ZankeyDiagram(data,options) {
 
 		to_g.selectAll("g.country rect.bg")
 					.attr("height",function(d){
-						return d3.max([0.5,d.values.sizes[CURRENT_STATUS] * ky + (_spacing_within.r*extents.diffs[CURRENT_STATUS])]);
+						return d3.max([1,d.values.sizes[CURRENT_STATUS] * ky + (_spacing_within.r*extents.diffs[CURRENT_STATUS])]);
 					})
 
 		to_g.selectAll("g.country text")
@@ -650,7 +650,7 @@ export default function ZankeyDiagram(data,options) {
 							return "url(#grad_"+area.a+"2gray";
 						}
 
-						return "url(#grad_"+area.a+"2"+d.to.replace(/\s/gi,"").toLowerCase()+")"
+						return "url(#grad_"+(area.a || d.from.replace(/\s/gi,"").toLowerCase())+"2"+d.to.replace(/\s/gi,"").toLowerCase()+")"
 						//return color_scale(d.to)
 					})
 		if(options.inner_labels[0]) {
