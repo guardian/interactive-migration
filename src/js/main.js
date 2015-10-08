@@ -208,7 +208,7 @@ export function init(el, context, config, mediator) {
                     inner_labels:[1,1],
                     topAligned:isSmallScreen,
                     legend:true,
-                    highlight:{
+                    defaultCountries:{
                         from:0,
                         to:"Germany"
                     },
@@ -242,7 +242,7 @@ export function init(el, context, config, mediator) {
                     inner_labels:[1,1],
                     topAligned:isSmallScreen,
                     legend:true,
-                    highlight:{
+                    defaultCountries:{
                         from:0,
                         to:"Germany"
                     },
@@ -351,7 +351,7 @@ export function init(el, context, config, mediator) {
                                                 show_country_names:[isSmallScreen?1:0,1],
                                                 show_country_numbers:[1,1],
                                                 topAligned:false,
-                                                highlight:{
+                                                defaultCountries:{
                                                     from:c.c,
                                                     to:0
                                                 }/*,
@@ -430,7 +430,7 @@ export function init(el, context, config, mediator) {
                                                 show_country_names:[1,isSmallScreen?1:0],
                                                 show_country_numbers:[1,1],
                                                 topAligned:false,
-                                                highlight:{
+                                                defaultCountries:{
                                                     from:0,
                                                     to:c.c
                                                 },

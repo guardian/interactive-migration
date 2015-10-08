@@ -64,7 +64,7 @@ export default function Migration(data,options) {
 			country_colors:options.country_colors,
 			show_country_names:options.show_country_names,
 			show_country_numbers:options.show_country_numbers,
-			highlight:options.highlight,
+			defaultCountries:options.defaultCountries,
 			areas:["africa","americas","asia","europe","oceania","america","namerica","samerica","unknown","stateless","centralandeasterneurope","othereuropeancountries"],
 			number_format:d3.format(",.0f"),
 			isSmallScreen:options.isSmallScreen,
