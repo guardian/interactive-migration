@@ -401,6 +401,7 @@
 	},
 	{
 	"name": "China",
+	"name": "China (including Hong Kong)",
 	"alpha-2": "CN",
 	"alpha-3": "CHN",
 	"country-code": "156",
@@ -863,6 +864,7 @@
 	},
 	{
 	"name": "Holy See (Vatican City State)",
+	"name2": "Vatican City State",
 	"alpha-2": "VA",
 	"alpha-3": "VAT",
 	"country-code": "336",
@@ -1300,6 +1302,7 @@
 	},
 	{
 	"name": "Micronesia, Federated States of",
+	"name2": "Federated States of Micronesia",
 	"alpha-2": "FM",
 	"alpha-3": "FSM",
 	"country-code": "583",
@@ -1745,6 +1748,7 @@
 	},
 	{
 	"name": "Sao Tome and Principe",
+	"name": "São Tomé and Príncipe",
 	"alpha-2": "ST",
 	"alpha-3": "STP",
 	"country-code": "678",

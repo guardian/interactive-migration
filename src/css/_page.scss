@@ -99,6 +99,7 @@
 		h2 {
 			@include fs-header(5);
 			font-size:28px;
+			margin-top:24px;
 			margin-bottom: 0;
 		}
 	}
@@ -144,6 +145,11 @@
 }
 .section:first-child {
 	border-top: none;
+}
+
+.sources {
+	@include fs-textSans(1);
+	color:#767676;
 }
 
 ul#chart-key {

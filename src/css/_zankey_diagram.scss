@@ -89,6 +89,18 @@ svg.zankey-diagram {
 				stroke-opacity:0.9;
 			}
 		}
+		.flow:not(.highlight) {
+			path {
+				stroke:#eee !important;
+				stroke-opacity:1 !important;
+			}
+		}
+		.flow.overlap {
+			text {
+				fill:#ff0000 !important;
+				font-weight: bold;
+			}
+		}
 		.flow.from {
 			&.small {
 				text.from,
@@ -98,7 +110,7 @@ svg.zankey-diagram {
 			}
 			text.to {
 				visibility: visible;
-				text-anchor:end;
+				text-anchor:start;//end;
 				
 				text-shadow: 0px 0px 2px rgba(255, 255, 255, 1);
 			}
@@ -115,7 +127,7 @@ svg.zankey-diagram {
 			}
 			text.from {
 				visibility: visible;
-				text-anchor:start;
+				text-anchor:end;//start;
 				
 				text-shadow: 0px 0px 2px rgba(255, 255, 255, 1);
 			}
@@ -140,6 +152,8 @@ svg.zankey-diagram {
 			//visibility: hidden;
 		}
 	}
+
+
 
 	.legend {
 		text {

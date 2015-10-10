@@ -98,10 +98,11 @@ export function init(el, context, config, mediator) {
                     })      
                 }
             })
-
-            /*console.log(d3.sum(data1992.filter(function(d){return d.from==="Asia"}),function(d){
+            /*
+            console.log(d3.sum(data1992.filter(function(d){return d.from==="Asia"}),function(d){
                 return d.total
-            }))*/
+            }))
+
             var sum=0;
             data1992.forEach(function(d){
                 var r=iso.find(function(c){
@@ -115,7 +116,7 @@ export function init(el, context, config, mediator) {
                 }
                 
             })
-
+            */
             data1992.forEach(function(d){
                 var r=iso.find(function(c){
                     return (c.name==d.from || c.name2==d.from)
@@ -144,21 +145,35 @@ export function init(el, context, config, mediator) {
                 //Asia
                 //Africa
             }
-
+            /*
             var nested=d3.nest()
                 .key(function(d){
                      return region_codes[d.region];
                 })
                 .entries(data1992)
 
-            ////console.log(nested)
-            //return;
+            console.log(nested)
+            var listed={};
+            nested.forEach(function(d){
+                console.log(d)
+                if(!listed[d.key]) {
+                    listed[d.key]=[];
+                }
+                d.values.forEach(function(f){
+                    if(listed[d.key].indexOf(f.from)<0) {
+                        listed[d.key].push(f.from);
 
-            data=data.filter(function(d){
+                    }
+                })
+            })
+            console.log(JSON.stringify(listed))
+            return;
+            */
+            /*data=data.filter(function(d){
                 return d.from!=="Asia" && d.from!=="Africa" && d.from!=="Oceania" 
                         && d.from!== "America" && d.from!=="Unknown" && d.from !== "Stateless"
                         && d.from !== "Central and Eastern Europe" && d.from !== "Other european countries"
-            })
+            })*/
 
             ////console.log(data)
             el.innerHTML = mainHTML.replace(/%assetPath%/g, config.assetPath);
@@ -219,7 +234,7 @@ export function init(el, context, config, mediator) {
                         migration2015.showFlows();
                     }
                 })
-                
+                return;
                 
                 var migration2015=new Migration(data.filter(function(d){return d.flows[0]>min_flow || d.flows[1]>min_flow}),{
                     container:"#m2015 > .migration",

@@ -380,7 +380,7 @@ export default function ZankeyDiagram(data,options) {
 								})
 								//.style("opacity",0)
 								.classed("small",function(d){
-
+									return 0;
 									return d.values.sizes[CURRENT_STATUS]<10000;;
 								})
 								.on("click",function(d){
@@ -490,12 +490,14 @@ export default function ZankeyDiagram(data,options) {
 									return d.key;
 								})
 								.classed("small",function(d){
+									return 0;
 									return d.values.sizes[CURRENT_STATUS]<10000;
 								})
 								//.style("opacity",0)
 								.on("click",function(d){
 									
 									//setHighlightMode(true);
+									
 									showFlowsTo(d.key);
 
 									if(options.mouseoverCallback) {
@@ -616,6 +618,13 @@ export default function ZankeyDiagram(data,options) {
 
         //y1 = (flow.to_y[CURRENT_STATUS]*ky)<0.5?y1-0.5:y1
 
+        flow.path={
+        	x0:x0,
+        	y0:y0,
+        	x1:x1,
+        	y1:y1
+        }
+
         return 	 "M" + x0 + "," + y0
 	           + "C" + x2 + "," + y0
 	           + " " + x3 + "," + y1
@@ -637,8 +646,10 @@ export default function ZankeyDiagram(data,options) {
 							.enter()
 							.append("g")
 								.attr("class","flow")
-								.classed("small",function(d){
-									//console.log("+++++++++",d,"+++++++++")
+								.classed("small",function(d,i){
+									return 0;
+									//console.log("+++++++++",i,":",d,"+++++++++")
+									//console.log("---> next ---->",flows.data()[i+1])
 									return d.flows[CURRENT_STATUS]<10000;;
 								})
 								.attr("rel",function(d,i){
@@ -664,11 +675,13 @@ export default function ZankeyDiagram(data,options) {
 		if(options.inner_labels[0]) {
 			new_flows
 				.append("text")
-				.attr("class","from")
-				//.attr("x",-5)
-				.attr("x",bar_width+5)
+				.attr("class",function(d){
+					return "from "+d.from.replace(/\s/gi,"").toLowerCase()
+				})
+				.attr("x",-5)
+				//.attr("x",bar_width+5)
 				.attr("y",function(flow){
-					return (flow.from_y[CURRENT_STATUS]) + (flow.flows[CURRENT_STATUS]*ky)/2
+					return (flow.from_y[CURRENT_STATUS]) + (flow.flows[CURRENT_STATUS]*ky)/2+15
 				})
 				.text(function(flow){
 					return options.number_format(flow.flows[CURRENT_STATUS]);
@@ -681,17 +694,19 @@ export default function ZankeyDiagram(data,options) {
 					return (flow.from_y[CURRENT_STATUS]) + (flow.flows[CURRENT_STATUS]*ky)/2
 				})
 				.text(function(flow){
-					return flow.from
+					return shortnames[flow.from] || flow.from;
 				})
 		}
 		
 		if(options.inner_labels[1]) {
 			new_flows.append("text")
-					.attr("class","to")
-					.attr("x",WIDTH-(margins.left+margins.right)-4)
-					//.attr("x",WIDTH-(margins.left+margins.right)+bar_width+2-bar_width)
+					.attr("class",function(d){
+						return "to "+d.to.replace(/\s/gi,"").toLowerCase()
+					})
+					//.attr("x",WIDTH-(margins.left+margins.right)-4)
+					.attr("x",WIDTH-(margins.left+margins.right)+bar_width+2)
 					.attr("y",function(flow){
-						return (flow.to_y[CURRENT_STATUS]) + (flow.flows[CURRENT_STATUS]*ky)/2
+						return (flow.to_y[CURRENT_STATUS]) + (flow.flows[CURRENT_STATUS]*ky)/2+15
 					})
 					.text(function(flow){
 						return options.number_format(flow.flows[CURRENT_STATUS]);
@@ -704,7 +719,7 @@ export default function ZankeyDiagram(data,options) {
 						return (flow.to_y[CURRENT_STATUS]) + (flow.flows[CURRENT_STATUS]*ky)/2
 					})
 					.text(function(flow){
-						return flow.to
+						return shortnames[flow.to] || flow.to;
 					})
 		}
 		
@@ -766,11 +781,17 @@ export default function ZankeyDiagram(data,options) {
 
 	}
 	function showFlowsFrom(src) {
-
+		var prev_y=0;
 		from_g.selectAll("g.country")
-			.classed("highlight",function(d){
+			.filter(function(d){
 				return d.key === src;
 			})
+			/*.classed("highlight",function(d){
+				return d.key === src;
+			})*/
+			.classed("highlight",true)
+
+
 		//if(!options.inner_labels[1]) {
 			to_g.selectAll("g.country")
 				.classed("highlight",function(d){
@@ -789,6 +810,12 @@ export default function ZankeyDiagram(data,options) {
 			})
 			.classed("highlight",true)
 			.classed("from",true)
+			.classed("overlap",function(d){
+				console.log(d)
+				var delta=d.path.y0 - prev_y;
+				prev_y=d.path.y0;
+				return delta<15;
+			})
 			.moveToFront()
 	}
 	function showFlowsTo(dst) {
