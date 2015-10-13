@@ -9,6 +9,11 @@
 		width:100%;
 		@include mq(tablet) {
 			float:left;
+			width:50%;
+			margin:0;
+		}
+		@include mq(desktop) {
+			float:left;
 			width:46%;
 			margin:0 2%;
 		}
@@ -76,9 +81,17 @@
 
 		div.none {
 			text-align: center;
-			line-height: 200px;
-			font-size: 150px;
-			color:#ddd;
+			@include fs-header(3);
+			line-height: 220px;
+			height: 220px;
+			color:#ccc;
+    		margin: 10px 0;
+			background: transparent url(../assets/imgs/flow.svg) center center no-repeat;
+			background-size:contain;
+			@include mq(tablet) {
+				line-height: 280px;
+				height: 280px;
+			}
 		}
 	}
 

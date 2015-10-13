@@ -142,6 +142,27 @@
 	.subsection:first-child {
 		border-top:none;
 	}
+	.subsection.full {
+		.sub-intro {
+			padding-top:20px;
+			float:left;
+			width:100%;
+		}
+		.sub-contents {
+			
+			@include mq(tablet) {
+				float:left;
+				width:33%;
+				padding-top:20px;
+
+				.sub-chart {
+					overflow: hidden;
+				}
+			}
+			
+
+		}
+	}
 }
 .section:first-child {
 	border-top: none;

@@ -13,6 +13,14 @@ svg.zankey-diagram {
 			fill:#767676;
 			visibility: hidden;
 		}
+		@include mq(tablet) {
+			text.country {
+				@include fs-header(1);
+			}
+			text.number {
+				@include fs-header(1);
+			}
+		}
 		&.highlight {
 			text {
 				visibility: visible;
@@ -95,12 +103,12 @@ svg.zankey-diagram {
 				stroke-opacity:1 !important;
 			}
 		}
-		.flow.overlap {
+		/*.flow.overlap {
 			text {
 				fill:#ff0000 !important;
 				font-weight: bold;
 			}
-		}
+		}*/
 		.flow.from {
 			&.small {
 				text.from,

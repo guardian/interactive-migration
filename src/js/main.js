@@ -19,7 +19,7 @@ export function init(el, context, config, mediator) {
 
     
     queue()
-        .defer(d3.csv,config.assetPath+"/assets/data/asylum_applicants_2015.csv",function(d){
+        .defer(d3.csv,config.assetPath+"/assets/data/asylum_applicants_2015_oct.csv",function(d){
             d.latest=0;
             d.latest_month=0;
             d.total=0;
@@ -43,7 +43,7 @@ export function init(el, context, config, mediator) {
 
             return d;
         })
-        .defer(d3.csv,config.assetPath+"/assets/data/asylum_applicants_1992.csv",function(d){
+        .defer(d3.csv,config.assetPath+"/assets/data/asylum_applicants_continents_1992.csv",function(d){
             d.latest=0;
             d.latest_month=0;
             d.total=0;
@@ -145,7 +145,7 @@ export function init(el, context, config, mediator) {
                 //Asia
                 //Africa
             }
-            /*
+            
             var nested=d3.nest()
                 .key(function(d){
                      return region_codes[d.region];
@@ -166,9 +166,9 @@ export function init(el, context, config, mediator) {
                     }
                 })
             })
-            console.log(JSON.stringify(listed))
-            return;
-            */
+            //console.log(listed)
+            //return;
+            
             /*data=data.filter(function(d){
                 return d.from!=="Asia" && d.from!=="Africa" && d.from!=="Oceania" 
                         && d.from!== "America" && d.from!=="Unknown" && d.from !== "Stateless"
@@ -211,7 +211,7 @@ export function init(el, context, config, mediator) {
                         r:0
                     },
                     margins:isSmallScreen?{
-                        top:5,
+                        top:25,
                         left:70,
                         right:70,
                         bottom:15 
@@ -234,7 +234,7 @@ export function init(el, context, config, mediator) {
                         migration2015.showFlows();
                     }
                 })
-                return;
+                //return;
                 
                 var migration2015=new Migration(data.filter(function(d){return d.flows[0]>min_flow || d.flows[1]>min_flow}),{
                     container:"#m2015 > .migration",
@@ -245,7 +245,7 @@ export function init(el, context, config, mediator) {
                         r:0
                     },
                     margins:isSmallScreen?{
-                        top:5,
+                        top:25,
                         left:70,
                         right:70,
                         bottom:15 
@@ -309,7 +309,8 @@ export function init(el, context, config, mediator) {
 
                 d3.select("#countriesSMCompareFrom")
                     .selectAll("div.subsection")
-                        .select("div.sub-contents")
+                        .selectAll("div.sub-contents")
+                            .select("div.sub-chart")
                             .selectAll("div.country-div")
                             .data(function(d,i){
                                 //console.log(this.parentNode.getAttribute("rel"))
@@ -350,10 +351,10 @@ export function init(el, context, config, mediator) {
                                                 legend:false,
                                                 inner_labels:[0,1],
                                                 margins:isSmallScreen?{
-                                                    top:5,
+                                                    top:45,
                                                     left:70,
                                                     right:80,
-                                                    bottom:15 
+                                                    bottom:45 
                                                 }:{
                                                     top:35,
                                                     left:c.status?80:80,
@@ -363,7 +364,7 @@ export function init(el, context, config, mediator) {
                                                 max:max,
                                                 status:c.status,
                                                 country_colors:[1,1],
-                                                show_country_names:[isSmallScreen?1:0,1],
+                                                show_country_names:[isSmallScreen?1:1,1],
                                                 show_country_numbers:[1,1],
                                                 topAligned:false,
                                                 defaultCountries:{
@@ -436,7 +437,7 @@ export function init(el, context, config, mediator) {
                                                 }:{
                                                     top:5,
                                                     left:c.status?120:85,
-                                                    right:c.status?65:65,
+                                                    right:c.status?90:90,
                                                     bottom:15
                                                 },
                                                 max:max,

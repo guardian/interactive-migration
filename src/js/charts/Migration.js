@@ -38,7 +38,7 @@ export default function Migration(data,options) {
 		if(!processed_data.flows[options.status].from.countries.length>0) {
 			diagram.append("div")
 						.attr("class","none")
-						.text("...");
+						.text("Data not available");
 			return;
 		}
 
@@ -148,7 +148,7 @@ export default function Migration(data,options) {
 					area=iso?iso["region-code"]:0,
 					subarea=iso?iso["sub-region-code"]:0;
 				if(!area) {
-					//console.log("NOT FOUND",d.key,area,iso)
+					console.log("NOT FOUND",d.key,area,iso)
 				}
 				if(region_codes[area]=="americas"){
 

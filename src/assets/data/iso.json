@@ -401,7 +401,7 @@
 	},
 	{
 	"name": "China",
-	"name": "China (including Hong Kong)",
+	"name2": "China (including Hong Kong)",
 	"alpha-2": "CN",
 	"alpha-3": "CHN",
 	"country-code": "156",
