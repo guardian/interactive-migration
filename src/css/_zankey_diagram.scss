@@ -1,11 +1,4 @@
 svg.zankey-diagram {
-	
-	//background-color: #ddd;
-	
-
-	
-
-	
 
 	.country {
 		text {
@@ -16,9 +9,11 @@ svg.zankey-diagram {
 		@include mq(tablet) {
 			text.country {
 				@include fs-header(1);
+				font-size:14px;
 			}
 			text.number {
 				@include fs-header(1);
+				font-size:15px;
 			}
 		}
 		&.highlight {
@@ -91,7 +86,11 @@ svg.zankey-diagram {
 		text.to {
 			text-anchor:end;
 		}
-		
+		.flow.small {
+			text {
+				visibility: hidden;	
+			}
+		}
 		.flow.highlight {
 			path {
 				stroke-opacity:0.9;

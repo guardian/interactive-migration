@@ -102,6 +102,12 @@
 			margin-top:24px;
 			margin-bottom: 0;
 		}
+		h3 {
+			@include fs-header(5);
+			font-size:20px;
+			margin-top:5px;
+			margin-bottom: 0;
+		}
 	}
 	.subsection {
 		width:100%;
@@ -152,12 +158,14 @@
 			
 			@include mq(tablet) {
 				float:left;
-				width:33%;
-				padding-top:20px;
-
+				width:50%;
 				.sub-chart {
 					overflow: hidden;
 				}
+			}
+			@include mq(desktop) {
+				width:33%;
+				padding-top:20px;
 			}
 			
 

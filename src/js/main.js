@@ -89,7 +89,7 @@ export function init(el, context, config, mediator) {
                 if(row) {
 
                     row.flows[0]=d1992.total;
-                    ////console.log("FOUND",row)
+                    //////console.log("FOUND",row)
                 } else {
                     data.push({
                         from:d1992.from,
@@ -99,7 +99,7 @@ export function init(el, context, config, mediator) {
                 }
             })
             /*
-            console.log(d3.sum(data1992.filter(function(d){return d.from==="Asia"}),function(d){
+            //console.log(d3.sum(data1992.filter(function(d){return d.from==="Asia"}),function(d){
                 return d.total
             }))
 
@@ -109,7 +109,7 @@ export function init(el, context, config, mediator) {
                     return (c.name==d.from || c.name2==d.from) && c["region-code"]=="142"
                 })
                 if(r) {
-                    ////console.log(d.from,d.to,d.total)    
+                    //////console.log(d.from,d.to,d.total)    
                     sum+=d.total;
 
 
@@ -152,10 +152,10 @@ export function init(el, context, config, mediator) {
                 })
                 .entries(data1992)
 
-            console.log(nested)
+            //console.log(nested)
             var listed={};
             nested.forEach(function(d){
-                console.log(d)
+                //console.log(d)
                 if(!listed[d.key]) {
                     listed[d.key]=[];
                 }
@@ -166,7 +166,7 @@ export function init(el, context, config, mediator) {
                     }
                 })
             })
-            //console.log(listed)
+            ////console.log(listed)
             //return;
             
             /*data=data.filter(function(d){
@@ -175,7 +175,7 @@ export function init(el, context, config, mediator) {
                         && d.from !== "Central and Eastern Europe" && d.from !== "Other european countries"
             })*/
 
-            ////console.log(data)
+            //////console.log(data)
             el.innerHTML = mainHTML.replace(/%assetPath%/g, config.assetPath);
 
             var min_flow=0;
@@ -216,6 +216,8 @@ export function init(el, context, config, mediator) {
                         right:70,
                         bottom:15 
                     }:null,
+                    showLegend:[1,0],
+                    showAll:[0,0],
                     country_colors:[1,1],
                     year:1992,
                     show_country_names:[1,1],
@@ -254,6 +256,7 @@ export function init(el, context, config, mediator) {
                     year:2015,
                     show_country_names:[1,1],
                     show_country_numbers:[1,1],
+                    showAll:[0,0],
                     inner_labels:[1,1],
                     topAligned:isSmallScreen,
                     legend:true,
@@ -289,7 +292,7 @@ export function init(el, context, config, mediator) {
                             })
                             .entries(data)
 
-                //console.log(maxes)
+                ////console.log(maxes)
 
                 var max=d3.max([
 
@@ -313,7 +316,7 @@ export function init(el, context, config, mediator) {
                             .select("div.sub-chart")
                             .selectAll("div.country-div")
                             .data(function(d,i){
-                                //console.log(this.parentNode.getAttribute("rel"))
+                                ////console.log(this.parentNode.getAttribute("rel"))
                                 return [
                                     {
                                         c:this.parentNode.getAttribute("rel"),
@@ -357,12 +360,13 @@ export function init(el, context, config, mediator) {
                                                     bottom:45 
                                                 }:{
                                                     top:35,
-                                                    left:c.status?80:80,
+                                                    left:c.status?90:90,
                                                     right:c.status?110:110,
                                                     bottom:45
                                                 },
-                                                max:max,
+                                                //max:max,
                                                 status:c.status,
+                                                showAll:[0,0],
                                                 country_colors:[1,1],
                                                 show_country_names:[isSmallScreen?1:1,1],
                                                 show_country_numbers:[1,1],
@@ -386,7 +390,7 @@ export function init(el, context, config, mediator) {
                         .select("div.sub-contents")
                             .selectAll("div.country-div")
                             .data(function(d,i){
-                                //console.log(this.parentNode.getAttribute("rel"))
+                                ////console.log(this.parentNode.getAttribute("rel"))
                                 return [
                                     {
                                         c:this.parentNode.getAttribute("rel"),
@@ -421,28 +425,32 @@ export function init(el, context, config, mediator) {
                                                 iso:iso,
                                                 country:c.c,
                                                 title:`${c.year}`,
-                                                auto:true,
+                                                auto:c.c==="Germany"?false:true,
                                                 spacing:{
-                                                    l:2,
+                                                    l:c.c==="Romania"?18:2,
                                                     r:0
                                                 },
                                                 isSmallScreen:isSmallScreen,
                                                 legend:false,
                                                 inner_labels:[1,0],
                                                 margins:isSmallScreen?{
-                                                    top:5,
+                                                    top:15,
                                                     left:80,
                                                     right:70,
                                                     bottom:15 
                                                 }:{
-                                                    top:5,
+                                                    top:15,
                                                     left:c.status?120:85,
                                                     right:c.status?90:90,
                                                     bottom:15
                                                 },
-                                                max:max,
+                                                max:c.c==="Germany"?180000:false,
                                                 status:c.status,
                                                 country_colors:[1,1],
+                                                showAll:[
+                                                    [1,0],
+                                                    [0,0]
+                                                ],
                                                 show_country_names:[1,isSmallScreen?1:0],
                                                 show_country_numbers:[1,1],
                                                 topAligned:false,

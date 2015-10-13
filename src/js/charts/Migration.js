@@ -3,8 +3,8 @@ import ZankeyDiagram from './ZankeyDiagram'
 
 export default function Migration(data,options) {
 
-	//console.log("Migration")
-	////console.log(options.country,data)
+	////console.log("Migration")
+	//////console.log(options.country,data)
 
 	var container=d3.select(options.container);
 
@@ -32,9 +32,9 @@ export default function Migration(data,options) {
 	;(function init(){
 
 		updateData();
-		////console.log("!!!!!!!!!!!!!!!!!!!!!!!")
-		////console.log(options.country,processed_data)
-		////console.log("!!!!!!!!!!!!!!!!!!!!!!!")
+		//////console.log("!!!!!!!!!!!!!!!!!!!!!!!")
+		//////console.log(options.country,processed_data)
+		//////console.log("!!!!!!!!!!!!!!!!!!!!!!!")
 		if(!processed_data.flows[options.status].from.countries.length>0) {
 			diagram.append("div")
 						.attr("class","none")
@@ -42,7 +42,7 @@ export default function Migration(data,options) {
 			return;
 		}
 
-		//console.log(processed_data)
+		////console.log(processed_data)
 
 		
 
@@ -59,9 +59,11 @@ export default function Migration(data,options) {
 			spacing:options.spacing,
 			auto:options.auto,
 			filter:null,
-			//max:options.max,
+			max:options.max,
+			showLegend:options.showLegend,
 			status:options.status,
 			country_colors:options.country_colors,
+			showAll:options.showAll,
 			show_country_names:options.show_country_names,
 			show_country_numbers:options.show_country_numbers,
 			defaultCountries:options.defaultCountries,
@@ -148,7 +150,7 @@ export default function Migration(data,options) {
 					area=iso?iso["region-code"]:0,
 					subarea=iso?iso["sub-region-code"]:0;
 				if(!area) {
-					console.log("NOT FOUND",d.key,area,iso)
+					//console.log("NOT FOUND",d.key,area,iso)
 				}
 				if(region_codes[area]=="americas"){
 
@@ -250,7 +252,7 @@ export default function Migration(data,options) {
 	}
 
 	this.showFlows=function(country,from) {
-		//console.log(country,from)
+		////console.log(country,from)
 		zankey.showFlows(country,from);
 	}
 

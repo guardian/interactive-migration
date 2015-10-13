@@ -3,7 +3,10 @@
 	overflow:hidden;
 	border-top:none;
 	
-
+	@include mq(tablet) {
+		width: calc(100% + 40px);
+		margin:0 -20px;
+	}
 
 	.split-view {
 		width:100%;
@@ -21,8 +24,10 @@
 
 	h3 {
 		@include fs-header(4);
+		font-weight:200;
 		@include mq(tablet) {
-			font-size: 30px;
+			font-size: 50px;
+			line-height: 52px;
 		}
 		text-align: center;
 		margin:0;
@@ -86,7 +91,7 @@
 			height: 220px;
 			color:#ccc;
     		margin: 10px 0;
-			background: transparent url(../assets/imgs/flow.svg) center center no-repeat;
+			background: transparent url(assets/imgs/flow.svg) center center no-repeat;
 			background-size:contain;
 			@include mq(tablet) {
 				line-height: 280px;
