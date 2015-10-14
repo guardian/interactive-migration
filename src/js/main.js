@@ -254,10 +254,6 @@ export function init(el, context, config, mediator) {
                         from:0,
                         to:"Germany"
                     },
-                    /*clickCallback:function(d){
-                        console.log(d);
-                        migration2015.showFlowsFromArea(d.d,d.from);
-                    },*/
                     mouseoverCallback:function(d){
                         migration2015.showFlows(d.d,d.from);
                     },
@@ -265,7 +261,8 @@ export function init(el, context, config, mediator) {
                         migration2015.showFlows();
                     }
                 })
-                //return;
+
+
                 
                 var migration2015=new Migration(data.filter(function(d){return d.flows[0]>min_flow || d.flows[1]>min_flow}),{
                     container:"#m2015 > .migration",
@@ -304,6 +301,11 @@ export function init(el, context, config, mediator) {
                     }
                 })
                 
+                
+
+
+                
+                
                 window.sr = new scrollReveal();
 
                
@@ -341,7 +343,7 @@ export function init(el, context, config, mediator) {
                     from:[],
                     to:[]
                 }
-
+                
                 d3.select("#countriesSMCompareFrom")
                     .selectAll("div.subsection")
                         .selectAll("div.sub-contents")
@@ -409,14 +411,7 @@ export function init(el, context, config, mediator) {
                                                 defaultCountries:{
                                                     from:c.c,
                                                     to:0
-                                                },
-                                                /*,
-                                                mouseoverCallback:function(d){
-                                                    flows.to[c.index][1-c.status].showFlows(d.d,d.from);
-                                                },
-                                                mouseleaveCallback:function(d){
-                                                    flows.to[c.index][1-c.status].showFlows();
-                                                }*/
+                                                }
                                             })
                                         );
                                     })
@@ -493,16 +488,43 @@ export function init(el, context, config, mediator) {
                                                 defaultCountries:{
                                                     from:0,
                                                     to:c.c
-                                                }/*,
-                                                mouseoverCallback:function(d){
-                                                    flows.to[c.index][1-c.status].showFlows(d.d,d.from);
-                                                },
-                                                mouseleaveCallback:function(d){
-                                                    flows.to[c.index][1-c.status].showFlows();
-                                                }*/
+                                                }
                                             })
                                         );
-                                    })
+                                    });
+                
+
+                ;(function() {
+                    var throttle = function(type, name, obj) {
+                        var obj = obj || window;
+                        var running = false;
+                        var func = function() {
+                            if (running) { return; }
+                            running = true;
+                            requestAnimationFrame(function() {
+                                obj.dispatchEvent(new CustomEvent(name));
+                                running = false;
+                            });
+                        };
+                        obj.addEventListener(type, func);
+                    };
+
+                    /* init - you can init any event */
+                    throttle ("resize", "optimizedResize");
+                })();
+
+                window.addEventListener("optimizedResize", function() {
+                    migration1992.resize();
+                    migration2015.resize();
+                    flows.from.forEach(function(d){
+                        d[0].resize();
+                    })
+                    flows.to.forEach(function(d){
+                        d[0].resize();
+                        d[1].resize();
+                    })
+                });
+
             }
             
 

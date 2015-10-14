@@ -399,7 +399,7 @@ export default function ZankeyDiagram(data,options) {
 										});
 									}
 								})
-								.on("touchstart",function(d){
+								.on("touchend",function(d){
 									cleanSelection();
 									showFlowsFrom(d.key);
 									if(options.mouseoverCallback) {
@@ -409,32 +409,7 @@ export default function ZankeyDiagram(data,options) {
 										});
 									}
 								})
-								/*
-								.on("click",function(d){
-									
-									//showFlows();
-									
-									//setHighlightMode(true);
-									
-									showFlowsFrom(d.key);
-									
-									if(options.clickCallback) {
-										options.clickCallback({
-											d:d,
-											from:1
-										})
-									}
-									
-									
-									if(options.mouseoverCallback) {
-										options.mouseoverCallback({
-											d:d,
-											from:1
-										});
-									}
-									
-								})
-								*/
+								
 		if(options.show_country_names[0]) {
 			new_countries.append("text")
 						.attr("class","country")
@@ -539,7 +514,7 @@ export default function ZankeyDiagram(data,options) {
 									return !options.inner_labels[1];
 								})
 								//.style("opacity",0)
-								.on("touchstart",function(d){
+								.on("touchend",function(d){
 									cleanSelection();
 									showFlowsTo(d.key,false);
 									if(options.mouseoverCallback) {
@@ -624,27 +599,13 @@ export default function ZankeyDiagram(data,options) {
 		to_countries.exit().remove();			
 
 		to_g.selectAll("g.country")
-								//.transition()
-								//.duration(1000)
 								.attr("transform",function(d,i){
 									var y=(d.values.flows[0].to_y[CURRENT_STATUS]);
 									return "translate(0,"+(y)+")";
 								})
-								//.style("opacity",1)
-								/*.selectAll("g.from-country")
-									.attr("transform",function(d){
-										var y=(d.rel_to_y[CURRENT_STATUS]);
-										return "translate(0,"+y+")";
-									})
-									.select("rect")
-										.attr("height",function(d){
-											return (d.flows[CURRENT_STATUS]*ky);
-										})*/
+								
 		to_g.selectAll("g.country rect.country")
 					.attr("height",function(d){
-
-						//////console.log("------------>",d)
-
 						return d3.max([0.5,d.values.sizes[CURRENT_STATUS] * ky + (_spacing_within.r*extents.diffs[CURRENT_STATUS])]);
 					})
 
@@ -654,10 +615,6 @@ export default function ZankeyDiagram(data,options) {
 					})
 
 		to_g.selectAll("g.country text")
-			/*.classed("hidden",function(d,i){
-				
-				return i>2 && (d.values.sizes[CURRENT_STATUS]*ky)<((10+_spacing.r*2)+options.show_country_numbers[1]?20:0);
-			})*/
 			.attr("y",function(d){
 				return (d.values.sizes[CURRENT_STATUS]*ky)/2;
 			})
@@ -694,13 +651,12 @@ export default function ZankeyDiagram(data,options) {
         	y1:y1
         }
 
-        return 	 "M" + x0 + "," + y0
+        return 	 "M" + x0 + "," + y0+" "
 	           + "C" + x2 + "," + y0
 	           + " " + x3 + "," + y1
 	           + " " + x1 + "," + y1;
 
-		return "M"+x0+","+y0+"L"+x1+","+y1+"";
-	} 
+	}
 
 	function updateFlows() {
 		
@@ -717,10 +673,10 @@ export default function ZankeyDiagram(data,options) {
 							.enter()
 							.append("g")
 								.attr("class","flow")
-								.attr("rel",function(d,i){
+								/*.attr("rel",function(d,i){
 									return i+": "+d.from+"2"+d.to;
-								})
-								.on("touchstart",function(d){
+								})*/
+								.on("touchend",function(d){
 									cleanSelection();
 									d3.select(this).classed("highlight",true).moveToFront();
 									if(!options.inner_labels[0]) {
@@ -746,6 +702,7 @@ export default function ZankeyDiagram(data,options) {
 		
 		
 		new_flows.append("path")
+					.attr("transform","translate(0,0)")
 					.style("stroke",function(d){
 						//return;
 						var area=data.countries.world.find(function(c){
@@ -843,6 +800,29 @@ export default function ZankeyDiagram(data,options) {
 						
 						
 
+	}
+	function resizeFlows(width) {
+
+		var d=flows_g.select("g.flow")
+				.select("path").attr("d");
+
+		var x1= +d.split(" ")[0].split(",")[0].replace(/m/gi,""),
+			x2= +d.split(" ")[3].split(",")[0],
+			pwidth=x2-x1;
+		
+		var nx2=width-(margins.left+margins.right+2),
+			nwidth=nx2-x1;
+
+		var factor=nwidth/pwidth;
+
+		flows_g.selectAll("g.flow")
+			.select("path")
+			.attr("transform","translate("+((1-factor)*(bar_width+2))+",0) scale("+factor+",1)")
+
+		flows_g.selectAll("g.flow")
+			.selectAll("text.to")
+			.attr("x",width-(margins.left+margins.right)+bar_width+2)
+			
 	}
 	function setHighlightMode(mode){
 		//svg.classed("highlight",mode)
@@ -947,12 +927,7 @@ export default function ZankeyDiagram(data,options) {
 			})
 			.classed("highlight",true)
 			.classed("from",true)
-			/*.classed("overlap",function(d){
-				//console.log(d)
-				var delta=d.path.y0 - prev_y;
-				prev_y=d.path.y0;
-				return delta<15;
-			})*/
+			
 			.moveToFront()
 	}
 	function showCountryLabelFrom(src) {
@@ -1041,12 +1016,26 @@ export default function ZankeyDiagram(data,options) {
 	function updateLegend() {
 		legend.attr("transform","translate("+margins.left+","+(extents.diffs_from[CURRENT_STATUS]+4)+")")
 	}
+	function resizeLegend(width) {
+		legend.select("text.to")
+				.attr("x",width-margins.right-margins.left);
 
+		legend.select("line")
+				.attr("x2",width-margins.right-margins.left-5)
+
+	}
 	this.update=function(){
 
 	}
 
-	this.resize=function(){
+	this.resize=function(width){
+		
+		to_g.attr("transform","translate("+(width-margins.right)+","+margins.top+")")
+		//console.log(width,WIDTH,width/WIDTH)
+		resizeFlows(width);
+		if(options.legend) {
+			resizeLegend(width);
+		}
 		
 	}
 }

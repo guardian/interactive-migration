@@ -271,13 +271,16 @@ export default function Migration(data,options) {
 	function update(){
 		zankey.update();
 	}
-
+	this.resize=function() {
+		resize();
+	}
 	function resize(){
 
-		var size=d3.select(options.container).node().getBoundingClientRect();
-			this.width=size.width;
-
-		zankey.update(this.width);
+		var size=diagram.node().getBoundingClientRect();
+		if(zankey) {
+			zankey.resize(size.width);	
+		}
+		
 	}
 
 }
