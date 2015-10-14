@@ -396,8 +396,8 @@ export function init(el, context, config, mediator) {
                                                     right:c.status?110:110,
                                                     bottom:45
                                                 },
-                                                max:162000,
-                                                status:c.status,
+                                                max:(c.c==="Europe" || c.c==="Asia" || c.c==="Africa")?445000:166000,
+                                                status:(c.c==="Europe" || c.c==="Asia" || c.c==="Africa")?0:c.status,
                                                 showAll:[
                                                     [0,0],
                                                     [0,0]
@@ -473,12 +473,12 @@ export function init(el, context, config, mediator) {
                                                     top:15,
                                                     left:80,
                                                     right:70,
-                                                    bottom:15 
+                                                    bottom:10 
                                                 }:{
                                                     top:15,
                                                     left:c.status?120:85,
                                                     right:c.status?90:90,
-                                                    bottom:15
+                                                    bottom:30
                                                 },
                                                 max:c.c==="Germany"?180000:false,
                                                 status:c.status,

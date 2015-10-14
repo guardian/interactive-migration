@@ -52,7 +52,7 @@ export default function Migration(data,options) {
 				top:15,
 				left:100,
 				right:110,
-				bottom:15
+				bottom:20
 			},
 			width:width,
 			height:height,
