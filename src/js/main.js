@@ -16,6 +16,28 @@ export function init(el, context, config, mediator) {
     //createViz(1992,"#migration");
     //createViz(2015,"#migration");
 
+    if (!Array.prototype.find) {
+      Array.prototype.find = function(predicate) {
+        if (this === null) {
+          throw new TypeError('Array.prototype.find called on null or undefined');
+        }
+        if (typeof predicate !== 'function') {
+          throw new TypeError('predicate must be a function');
+        }
+        var list = Object(this);
+        var length = list.length >>> 0;
+        var thisArg = arguments[1];
+        var value;
+
+        for (var i = 0; i < length; i++) {
+          value = list[i];
+          if (predicate.call(thisArg, value, i, list)) {
+            return value;
+          }
+        }
+        return undefined;
+      };
+    }
 
     
     queue()
@@ -217,7 +239,10 @@ export function init(el, context, config, mediator) {
                         bottom:15 
                     }:null,
                     showLegend:[1,0],
-                    showAll:[0,0],
+                    showAll:[
+                        [0,0],
+                        [0,0]
+                    ],
                     country_colors:[1,1],
                     year:1992,
                     show_country_names:[1,1],
@@ -229,6 +254,10 @@ export function init(el, context, config, mediator) {
                         from:0,
                         to:"Germany"
                     },
+                    /*clickCallback:function(d){
+                        console.log(d);
+                        migration2015.showFlowsFromArea(d.d,d.from);
+                    },*/
                     mouseoverCallback:function(d){
                         migration2015.showFlows(d.d,d.from);
                     },
@@ -256,7 +285,10 @@ export function init(el, context, config, mediator) {
                     year:2015,
                     show_country_names:[1,1],
                     show_country_numbers:[1,1],
-                    showAll:[0,0],
+                    showAll:[
+                        [0,0],
+                        [0,0]
+                    ],
                     inner_labels:[1,1],
                     topAligned:isSmallScreen,
                     legend:true,
@@ -345,7 +377,7 @@ export function init(el, context, config, mediator) {
                                                 iso:iso,
                                                 country:c.c,
                                                 //title:`${c.year}`,
-                                                auto:true,
+                                                auto:false,
                                                 spacing:{
                                                     l:0,
                                                     r:2
@@ -364,9 +396,12 @@ export function init(el, context, config, mediator) {
                                                     right:c.status?110:110,
                                                     bottom:45
                                                 },
-                                                //max:max,
+                                                max:162000,
                                                 status:c.status,
-                                                showAll:[0,0],
+                                                showAll:[
+                                                    [0,0],
+                                                    [0,0]
+                                                ],
                                                 country_colors:[1,1],
                                                 show_country_names:[isSmallScreen?1:1,1],
                                                 show_country_numbers:[1,1],
@@ -374,7 +409,8 @@ export function init(el, context, config, mediator) {
                                                 defaultCountries:{
                                                     from:c.c,
                                                     to:0
-                                                }/*,
+                                                },
+                                                /*,
                                                 mouseoverCallback:function(d){
                                                     flows.to[c.index][1-c.status].showFlows(d.d,d.from);
                                                 },
@@ -427,7 +463,7 @@ export function init(el, context, config, mediator) {
                                                 title:`${c.year}`,
                                                 auto:c.c==="Germany"?false:true,
                                                 spacing:{
-                                                    l:c.c==="Romania"?18:2,
+                                                    l:c.c==="Romania"?(isSmallScreen?14:18):2,
                                                     r:0
                                                 },
                                                 isSmallScreen:isSmallScreen,
@@ -448,7 +484,7 @@ export function init(el, context, config, mediator) {
                                                 status:c.status,
                                                 country_colors:[1,1],
                                                 showAll:[
-                                                    [1,0],
+                                                    [0,0],
                                                     [0,0]
                                                 ],
                                                 show_country_names:[1,isSmallScreen?1:0],
@@ -457,13 +493,13 @@ export function init(el, context, config, mediator) {
                                                 defaultCountries:{
                                                     from:0,
                                                     to:c.c
-                                                },
+                                                }/*,
                                                 mouseoverCallback:function(d){
                                                     flows.to[c.index][1-c.status].showFlows(d.d,d.from);
                                                 },
                                                 mouseleaveCallback:function(d){
                                                     flows.to[c.index][1-c.status].showFlows();
-                                                }
+                                                }*/
                                             })
                                         );
                                     })

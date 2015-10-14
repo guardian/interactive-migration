@@ -51,7 +51,7 @@ export default function Migration(data,options) {
 			margins:options.margins || {
 				top:15,
 				left:100,
-				right:100,
+				right:110,
 				bottom:15
 			},
 			width:width,
@@ -73,6 +73,7 @@ export default function Migration(data,options) {
 			topAligned:options.topAligned,
 			legend:options.legend,
 			inner_labels:options.inner_labels?options.inner_labels:[0,0],
+			clickCallback:options.clickCallback,
 			mouseoverCallback:options.mouseoverCallback,
 			mouseleaveCallback:options.mouseleaveCallback
 		});
@@ -254,6 +255,9 @@ export default function Migration(data,options) {
 	this.showFlows=function(country,from) {
 		////console.log(country,from)
 		zankey.showFlows(country,from);
+	}
+	this.showFlowsFromArea=function(country,from) {
+		zankey.showFlowsFromArea(country,from);
 	}
 
 	this.changeStatus=function(status) {

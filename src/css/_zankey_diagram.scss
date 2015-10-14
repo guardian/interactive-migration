@@ -22,6 +22,12 @@ svg.zankey-diagram {
 				fill:black;
 			}
 		}
+		&.show-always {
+			text {
+				visibility: visible;
+				fill:black;
+			}
+		}
 
 
 		rect.africa {
@@ -82,18 +88,33 @@ svg.zankey-diagram {
 			@include fs-textSans(1);
 			fill:#000;
 			visibility: hidden;
+			text-anchor:end;
+		}
+		@include mq(tablet) {
+			text {
+				@include fs-header(1);
+				font-size:14px;
+			}
+			text.number {
+				font-size:15px;
+				//fill:#339933;
+			}
 		}
 		text.to {
-			text-anchor:end;
+			text-anchor:start;
 		}
 		.flow.small {
 			text {
 				visibility: hidden;	
 			}
 		}
+		
 		.flow.highlight {
 			path {
 				stroke-opacity:0.9;
+			}
+			text {
+				visibility: visible;
 			}
 		}
 		.flow:not(.highlight) {
@@ -117,9 +138,12 @@ svg.zankey-diagram {
 			}
 			text.to {
 				visibility: visible;
-				text-anchor:start;//end;
+				//text-anchor:start;//end;
 				
-				text-shadow: 0px 0px 2px rgba(255, 255, 255, 1);
+				//text-shadow: 0px 0px 2px rgba(255, 255, 255, 1);
+			}
+			text.from {
+				visibility: hidden;
 			}
 			text.to-country {
 				text-anchor:start;
@@ -134,12 +158,20 @@ svg.zankey-diagram {
 			}
 			text.from {
 				visibility: visible;
-				text-anchor:end;//start;
+				//text-anchor:end;//start;
 				
-				text-shadow: 0px 0px 2px rgba(255, 255, 255, 1);
+				//text-shadow: 0px 0px 2px rgba(255, 255, 255, 1);
+			}
+			text.to {
+				visibility: hidden;
 			}
 			text.from-country {
-				text-anchor:end;
+				//text-anchor:end;
+			}
+			&.unknown-stateless {
+				text.number {
+					visibility: hidden;
+				}
 			}
 		}
 	}
