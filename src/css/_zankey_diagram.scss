@@ -7,13 +7,21 @@ svg.zankey-diagram {
 			visibility: hidden;
 		}
 		@include mq(tablet) {
-			text.country {
+			text {
 				@include fs-header(1);
+				font-weight:bold;
+			}
+			text.country {
 				font-size:14px;
 			}
 			text.number {
-				@include fs-header(1);
 				font-size:15px;
+				font-weight:normal;
+			}
+			@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) { 
+	    		text.number {
+	    			font-weight: 200;
+	    		}
 			}
 		}
 		&.highlight {
@@ -94,10 +102,16 @@ svg.zankey-diagram {
 			text {
 				@include fs-header(1);
 				font-size:14px;
+				font-weight: bold;
 			}
 			text.number {
 				font-size:15px;
-				//fill:#339933;
+				font-weight: normal;
+			}
+			@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) { 
+	    		text.number {
+	    			font-weight: 200;
+	    		}
 			}
 		}
 		text.to {

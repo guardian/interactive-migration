@@ -35,10 +35,17 @@
 		}
 
 		h4 {
-			@include fs-header(1);
+			@include fs-header(2);
+			font-weight: normal;
 			text-align: center;
 			margin:0;
 			padding: 0;
+			color:#666;
+		}
+		@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) { 
+    		h4 {
+    			font-weight: 200;
+    		}
 		}
 		
 		@include mq(desktop) {
